@@ -110,6 +110,9 @@ Sources are recorded per model in [the catalogue audit](desktop/tests/device_cat
 
 ## Privacy and storage
 
+**Whoosh Bridge does not collect your login credentials or send them to its developer or an intermediary server.** Saved Garmin session tokens and optional MyWhoosh credentials are stored locally in your Mac’s Keychain. Credentials and session tokens are used to authenticate directly with Garmin and MyWhoosh: they are necessarily transmitted to the relevant service when signing in or making authenticated requests.
+
+- Your Garmin password is not saved by the app; only session tokens are retained in Keychain.
 - Garmin tokens and optional MyWhoosh credentials use macOS Keychain (`com.mywhooshbridge.sessions`).
 - Unit IDs, selected model and language are stored in a private local preferences file at `~/Library/Application Support/Whoosh Bridge/preferences.json`. Existing preferences are migrated from Keychain once; the legacy item is retained for older app versions.
 - MyWhoosh website cookies/session storage use the app’s persistent WebKit data store.

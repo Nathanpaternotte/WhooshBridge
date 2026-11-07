@@ -90,6 +90,10 @@ Vos originaux MyWhoosh ne sont pas modifiés. Les activités déjà présentes s
 
 ## Données enregistrées
 
+**Whoosh Bridge ne collecte pas vos identifiants de connexion et ne les envoie ni à son développeur ni à un serveur intermédiaire.** Les jetons de session Garmin et les identifiants MyWhoosh optionnels sont enregistrés localement dans le trousseau de votre Mac (Keychain). Les identifiants et jetons servent à vous authentifier directement auprès de Garmin et MyWhoosh : ils sont nécessairement transmis au service concerné lors de la connexion ou des requêtes authentifiées.
+
+Votre mot de passe Garmin n’est pas enregistré par l’application ; seuls les jetons de session sont conservés dans le trousseau.
+
 Les jetons Garmin et les identifiants MyWhoosh optionnels sont conservés dans le trousseau macOS. Les Unit ID, le modèle et la langue sont enregistrés dans un fichier local privé : `~/Library/Application Support/Whoosh Bridge/preferences.json`. Les anciens réglages sont repris du trousseau une seule fois ; leur ancienne entrée est conservée pour les versions précédentes. MyWhoosh utilise aussi un stockage WebKit persistant. Déconnecter les comptes efface les sessions et identifiants de connexion, mais conserve les réglages des appareils. Effacer le champ Unit ID oublie la valeur de ce modèle.
 
 Si macOS demande un accès au trousseau, **Toujours autoriser** mémorise l’autorisation pour cette identité de l’app ; **Autoriser** ne vaut que pour cet accès. La signature locale actuelle change après reconstruction du binaire et peut entraîner une nouvelle demande. Une signature Developer ID stable est nécessaire pour conserver une identité fiable entre les versions. Les identifiants MyWhoosh ne sont lus que lorsqu’une reconnexion au site est nécessaire.
