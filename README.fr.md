@@ -10,7 +10,7 @@ Application macOS permettant de choisir ses sorties MyWhoosh, de préparer leurs
 ## Fonctionnalités
 
 - Connexion au site officiel MyWhoosh, sélection des sorties et transfert vers Garmin Connect.
-- Sélecteur de 12 modèles Edge avec **Product ID automatique** et versions logicielles publiées par Garmin.
+- Sélecteur de 13 modèles Edge avec **Product ID automatique** et versions logicielles publiées par Garmin.
 - **Unit ID personnel obligatoire**, mémorisé par modèle dans le trousseau macOS.
 - Sessions conservées entre les ouvertures ; une panne réseau ne supprime pas la connexion enregistrée.
 - Identifiants MyWhoosh mémorisables dans le trousseau pour préremplir le site officiel. Le CAPTCHA et les choix de consentement restent manuels.

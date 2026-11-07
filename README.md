@@ -10,7 +10,7 @@ A macOS app that lets you select MyWhoosh cycling activities, prepare their FIT 
 ## What it does
 
 - Browse and select your MyWhoosh rides through the official MyWhoosh website sign-in flow.
-- Choose one of 12 verified Edge profiles. The Product ID is set automatically.
+- Choose one of 13 verified Edge profiles. The Product ID is set automatically.
 - Associate your personal **Unit ID**, remembered separately for each model in macOS Keychain.
 - Keep Garmin sessions in Keychain and MyWhoosh sessions in a persistent WebKit store. Reauthentication is requested when the session is missing or rejected, not on every launch.
 - Optionally store your MyWhoosh email/password in Keychain to prefill the official login window. CAPTCHA and consent remain under your control.
@@ -83,6 +83,7 @@ These names and identifiers were checked against Garmin’s official FIT profile
 | Edge 1030 Plus | 3570 | 6.75 |
 | Edge 1040 | 3843 | 31.33 |
 | Edge 1050 | 4440 | 31.33 |
+| Edge 1060 | 4962 | 8.19 |
 | Edge Explore 2 | 4169 | 30.23 |
 
 Sources are recorded per model in [the catalogue audit](desktop/tests/device_catalog_audit.json). Additional regional or hardware variants are not automatically inferred from a Unit ID.

@@ -87,7 +87,7 @@ venv/bin/python desktop/tests/check_fit_identity.py
 node --test desktop/tests/*.test.cjs
 ```
 
-Independent FIT checks decode 24 synthetic exports (12 Edge models, both byte
+Independent FIT checks decode 26 synthetic exports (13 Edge models, both byte
 orders) with fit-tool and compare identities, versions, samples, accessories and
 CRCs. Account/network operations are mocked or avoided in these tests.
 

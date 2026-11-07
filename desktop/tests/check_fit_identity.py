@@ -84,4 +84,5 @@ std::fs::write(&a[2],output).unwrap(); }}''')
                     assert values['descriptor']==name
                     assert abs(values['software_version']-firmware/100)<0.0001
                 if kind=='file_creator': assert values['software_version']==firmware
-    print('24 FIT exports decoded independently: 12 Edge models, both byte orders; identity, firmware, sensors, samples and CRC verified.')
+    count = len(audit['edge_firmware'])
+    print(f'{count * 2} FIT exports decoded independently: {count} Edge models, both byte orders; identity, firmware, sensors, samples and CRC verified.')

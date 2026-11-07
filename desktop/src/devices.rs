@@ -1,10 +1,11 @@
-// IDs verified against Garmin's official FIT profile, 2026-11-06:
+// IDs verified against Garmin's official FIT profile, 2026-11-07:
 // https://github.com/garmin/fit-python-sdk/blob/main/garmin_fit_sdk/profile.py
 pub const DEVICES: &[(&str, u16, &str)] = &[
     ("Edge 840", 4062, "Compteur vélo"),
     ("Edge 540", 4061, "Compteur vélo"),
     ("Edge 1040", 3843, "Compteur vélo"),
     ("Edge 1050", 4440, "Compteur vélo"),
+    ("Edge 1060", 4962, "Compteur vélo"),
     ("Edge 550", 4633, "Compteur vélo"),
     ("Edge 850", 4634, "Compteur vélo"),
     ("Edge 530", 3121, "Compteur vélo"),
@@ -31,6 +32,7 @@ pub const EDGE_FIRMWARE: &[(u16, u16)] = &[
     (4061, 3133),
     (3843, 3133),
     (4440, 3133),
+    (4962, 819),
     (4633, 3220),
     (4634, 3220),
     (3121, 975),

@@ -6,7 +6,7 @@
     "patch": 0,
     "type": "Release"
   },
-  "verified": "2026-11-06",
+  "verified": "2026-11-07",
   "devices": [
     {
       "name": "Edge 840",
@@ -27,6 +27,11 @@
       "name": "Edge 1050",
       "product": 4440,
       "official_symbol": "edge_1050"
+    },
+    {
+      "name": "Edge 1060",
+      "product": 4962,
+      "official_symbol": "edge_1060"
     },
     {
       "name": "Edge 550",
@@ -139,6 +144,11 @@
       "product": 4440,
       "software_raw": 3133,
       "source": "https://forums.garmin.com/sports-fitness/cycling/f/edge-1050/439457/edge-1050-series-sw-31-33"
+    },
+    {
+      "product": 4962,
+      "software_raw": 819,
+      "source": "https://forums.garmin.com/sports-fitness/cycling/f/edge-1060/447531/edge-1060-sw-8-19"
     },
     {
       "product": 4633,
