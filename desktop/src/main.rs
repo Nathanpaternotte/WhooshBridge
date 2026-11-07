@@ -61,7 +61,7 @@ impl App {
         let worker = Worker::new(cc.egui_ctx.clone());
         let preview = cfg!(debug_assertions) && std::env::var_os("WHOOSH_UI_PREVIEW").is_some();
         if !preview {
-            let _ = worker.commands.send(Command::Restore);
+            let _ = worker.commands.send(Command::Restore(true));
         }
         let icon = design::icon_data();
         let icon = cc.egui_ctx.load_texture(
@@ -101,32 +101,6 @@ impl App {
             mfa_code: String::new(),
             confirm: false,
         };
-        if !preview {
-            match session_store::load_devices() {
-                Ok(preferences) => {
-                    if let Some(language) = preferences.language {
-                        i18n::set_english(language);
-                    }
-                    app.device_product = preferences.selected;
-                    app.unit_id = preferences
-                        .units
-                        .get(&preferences.selected)
-                        .map(u32::to_string)
-                        .unwrap_or_default();
-                    app.device_preferences = preferences;
-                    app.device_store_ready = true;
-                }
-                Err(error) => app.error = Some(error.to_string()),
-            }
-            match session_store::load_whoosh() {
-                Ok(Some((email, password))) => {
-                    app.whoosh = Credentials { email, password };
-                    app.remember_whoosh = true;
-                }
-                Ok(None) => (),
-                Err(error) => app.error = Some(error.to_string()),
-            }
-        }
         if preview {
             app.busy = false;
             app.unit_id = "123456789".into();
@@ -157,7 +131,24 @@ impl App {
                 app.selected.insert("0".into());
                 app.selected.insert("1".into());
                 app.status = "Vos comptes sont connectés.".into();
+                if state == "mfa" {
+                    app.mfa_open = true;
+                    app.busy = true;
+                }
+                if state == "loading" {
+                    app.busy = true;
+                    app.progress = 0.45;
+                    app.status = "Téléchargement : Une très longue sortie au cœur des montagnes et des vallées".into();
+                }
+                if state == "no-rides" {
+                    app.activities.clear();
+                    app.selected.clear();
+                    app.has_more = false;
+                }
                 if state == "error" {
+                    app.error = Some(
+                        "Envoi non confirmé. Vérifiez Garmin Connect avant de réessayer.".into(),
+                    );
                     app.results.insert(
                         "0".into(),
                         (
@@ -224,6 +215,23 @@ impl App {
     fn events(&mut self) {
         while let Ok(event) = self.worker.events.try_recv() {
             match event {
+                Event::Preferences(preferences) => {
+                    if let Some(language) = preferences.language {
+                        i18n::set_english(language);
+                    }
+                    self.device_product = preferences.selected;
+                    self.unit_id = preferences
+                        .units
+                        .get(&preferences.selected)
+                        .map(u32::to_string)
+                        .unwrap_or_default();
+                    self.device_preferences = preferences;
+                    self.device_store_ready = true;
+                }
+                Event::WhooshCredentials(email, password) => {
+                    self.whoosh = Credentials { email, password };
+                    self.remember_whoosh = true;
+                }
                 Event::AuthRequired(service) => {
                     if service == "garmin" {
                         self.garmin_needs_login = true;
@@ -288,17 +296,19 @@ impl App {
         ui.add(
             egui::TextEdit::singleline(&mut credentials.email)
                 .hint_text(t("Adresse e-mail"))
+                .margin(egui::vec2(12.0, 10.0))
                 .desired_width(f32::INFINITY),
         );
         ui.add(
             egui::TextEdit::singleline(&mut credentials.password)
                 .password(true)
                 .hint_text(t("Mot de passe"))
+                .margin(egui::vec2(12.0, 10.0))
                 .desired_width(f32::INFINITY),
         );
         ui.add_enabled(
             !credentials.email.trim().is_empty() && !credentials.password.is_empty(),
-            egui::Button::new(t("Se connecter")),
+            design::primary("Se connecter"),
         )
         .clicked()
     }
@@ -324,7 +334,7 @@ impl App {
         ui.label(RichText::new(t("De MyWhoosh à Garmin. À vous de choisir.")).weak());
         ui.add_space(10.0);
         if !self.whoosh_ready {
-            ui.add_space(65.0);
+            ui.add_space(30.0);
             ui.vertical_centered(|ui| {
                 ui.label(
                     RichText::new(t("Toutes vos sorties, au même endroit."))
@@ -340,9 +350,9 @@ impl App {
                     ui.spinner();
                     ui.label(t("Restauration de votre session…"));
                 } else if self.whoosh_needs_login {
-                    ui.add(egui::TextEdit::singleline(&mut self.whoosh.email).hint_text(t("Adresse e-mail MyWhoosh")).desired_width(300.0));
-                    ui.add(egui::TextEdit::singleline(&mut self.whoosh.password).password(true).hint_text(t("Mot de passe MyWhoosh")).desired_width(300.0));
-                    ui.checkbox(&mut self.remember_whoosh, t("Mémoriser dans le trousseau macOS"));
+                    ui.add(egui::TextEdit::singleline(&mut self.whoosh.email).hint_text(t("Adresse e-mail MyWhoosh")).margin(egui::vec2(12.0, 10.0)).desired_width(320.0));
+                    ui.add(egui::TextEdit::singleline(&mut self.whoosh.password).password(true).hint_text(t("Mot de passe MyWhoosh")).margin(egui::vec2(12.0, 10.0)).desired_width(320.0));
+                    design::checkbox(ui, &mut self.remember_whoosh, &t("Mémoriser dans le trousseau macOS"));
                     if ui.add_enabled(!self.whoosh.email.trim().is_empty() && !self.whoosh.password.is_empty(), design::primary("Connecter MyWhoosh")).clicked() {
                         self.dispatch(
                             Command::WhooshLogin(self.whoosh.email.trim().into(), self.whoosh.password.clone(), self.remember_whoosh),
@@ -355,7 +365,7 @@ impl App {
                             .weak(),
                     );
                 } else if ui.button(t("Réessayer la connexion")).clicked() {
-                    self.dispatch(Command::Restore, "Restauration…");
+                    self.dispatch(Command::Restore(false), "Restauration…");
                 }
             });
             return;
@@ -366,38 +376,40 @@ impl App {
                 .margin(egui::vec2(12.0, 10.0))
                 .desired_width(f32::INFINITY),
         );
-        ui.horizontal(|ui| {
+        ui.horizontal_wrapped(|ui| {
             ui.label(
                 RichText::new(t(format!("{} sélectionnée(s)", self.selected.len())))
                     .small()
                     .color(ACCENT),
             );
-            ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
-                if ui
-                    .add(
-                        egui::Button::new(RichText::new(t("Tout désélectionner")).size(12.0))
-                            .frame(false),
-                    )
-                    .clicked()
-                {
-                    self.selected.clear();
-                }
-                if ui
-                    .add(
-                        egui::Button::new(RichText::new(t("Tout sélectionner")).size(12.0))
-                            .frame(false),
-                    )
-                    .clicked()
-                {
-                    for a in &self.activities {
-                        if a.name.to_lowercase().contains(&self.search.to_lowercase())
-                            && !self.results.get(&a.id).is_some_and(|r| r.1)
-                        {
-                            self.selected.insert(a.id.clone());
-                        }
+            if ui
+                .add(
+                    egui::Button::new(RichText::new(t("Tout sélectionner")).size(12.0))
+                        .frame(false),
+                )
+                .clicked()
+            {
+                let search = self.search.to_lowercase();
+                for activity in &self.activities {
+                    if activity.name.to_lowercase().contains(&search)
+                        && !self
+                            .results
+                            .get(&activity.id)
+                            .is_some_and(|result| result.1)
+                    {
+                        self.selected.insert(activity.id.clone());
                     }
                 }
-            });
+            }
+            if ui
+                .add(
+                    egui::Button::new(RichText::new(t("Tout désélectionner")).size(12.0))
+                        .frame(false),
+                )
+                .clicked()
+            {
+                self.selected.clear();
+            }
         });
         ui.add_space(4.0);
         let height = (ui.available_height() - 52.0).max(100.0);
@@ -440,7 +452,10 @@ impl App {
                             let mut checked = selected;
                             ui.horizontal_top(|ui| {
                                 if ui
-                                    .add_enabled(!done, egui::Checkbox::without_text(&mut checked))
+                                    .add_enabled_ui(!done, |ui| {
+                                        design::checkbox(ui, &mut checked, "")
+                                    })
+                                    .inner
                                     .on_hover_text(t("Sélectionner cette sortie"))
                                     .changed()
                                 {
@@ -451,6 +466,7 @@ impl App {
                                     }
                                 }
                                 ui.vertical(|ui| {
+                                    ui.set_width(ui.available_width());
                                     ui.add(
                                         egui::Label::new(
                                             RichText::new(
@@ -487,7 +503,11 @@ impl App {
                 }
                 if visible == 0 {
                     ui.add_space(32.0);
-                    ui.label(t("Aucune sortie ne correspond à votre recherche."));
+                    ui.label(t(if self.activities.is_empty() {
+                        "Aucune sortie disponible pour le moment."
+                    } else {
+                        "Aucune sortie ne correspond à votre recherche."
+                    }));
                 }
             });
         if self.has_more && ui.button(t("Afficher les sorties précédentes")).clicked() {
@@ -498,7 +518,7 @@ impl App {
         ui.label(RichText::new(t("DESTINATION")).size(11.0).strong().weak());
         ui.add_space(2.0);
         ui.heading(RichText::new(t("Votre Garmin")).strong());
-        ui.add_space(14.0);
+        ui.add_space(6.0);
         ui.label(RichText::new(t("Modèle Edge")).strong());
         let device_name = devices::DEVICES
             .iter()
@@ -529,18 +549,10 @@ impl App {
                 .unwrap_or_default();
             self.save_device_preferences();
         }
-        ui.label(
-            RichText::new(t(format!(
-                "Product ID : {} · automatique",
-                self.device_product
-            )))
-            .small()
-            .weak(),
-        );
         let software = devices::firmware(self.device_product).unwrap();
-        ui.label(RichText::new(t(format!("Version FIT : {}.{:02}", software / 100, software % 100))).small().weak())
+        ui.label(RichText::new(t(format!("Product ID : {} · FIT {}.{:02}", self.device_product, software / 100, software % 100))).small().weak())
             .on_hover_text(t("Version publiée par Garmin pour ce modèle, déclarée dans le FIT. Le firmware installé sur votre appareil n’est pas lu."));
-        ui.add_space(12.0);
+        ui.add_space(6.0);
         ui.horizontal(|ui| {
             ui.label(RichText::new(t("Identifiant d’unité (Unit ID)")).strong());
             unit_help::button(ui);
@@ -558,7 +570,7 @@ impl App {
             self.save_device_preferences();
         }
         ui.label(
-            RichText::new(t("Enregistrement automatique dans le trousseau macOS."))
+            RichText::new(t("Enregistré automatiquement sur ce Mac."))
                 .small()
                 .weak(),
         );
@@ -567,9 +579,9 @@ impl App {
                 ui.colored_label(design::RED, t(error));
             }
         }
-        ui.add_space(18.0);
+        ui.add_space(8.0);
         ui.separator();
-        ui.add_space(12.0);
+        ui.add_space(6.0);
         ui.horizontal(|ui| {
             ui.label(RichText::new(t("Garmin Connect")).strong());
             ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
@@ -590,7 +602,7 @@ impl App {
             ui.label(RichText::new(t("Restauration de votre session…")).weak());
         } else if !self.garmin_needs_login {
             if ui.button(t("Réessayer la connexion")).clicked() {
-                self.dispatch(Command::Restore, "Restauration…");
+                self.dispatch(Command::Restore(false), "Restauration…");
             }
         } else if Self::credentials(ui, &mut self.garmin) {
             let password = std::mem::take(&mut self.garmin.password);
@@ -599,16 +611,15 @@ impl App {
                 "Connexion à Garmin Connect…",
             );
         }
-        ui.add_space(14.0);
+        ui.add_space(6.0);
         ui.label(
             RichText::new(t("Vos sessions sont mémorisées sur ce Mac."))
                 .small()
                 .weak(),
         );
-        ui.add_space(14.0);
-        egui::Frame::new().fill(Color32::from_rgb(244, 247, 252)).corner_radius(12).inner_margin(12).show(ui, |ui| {
-            ui.label(RichText::new(t("Un fichier préparé pour Garmin")).size(12.0).strong());
-            ui.label(RichText::new(t("Vos mesures et capteurs sont conservés. Les moyennes manquantes sont complétées ; les températures virtuelles sont retirées.")).size(12.0).weak());
+        ui.add_space(6.0);
+        ui.collapsing(t("Un fichier préparé pour Garmin"), |ui| {
+            ui.label(RichText::new(t("Vos mesures et capteurs sont conservés. Les moyennes manquantes sont complétées ; les températures virtuelles sont retirées.")).small().weak());
         });
     }
 }
@@ -648,7 +659,10 @@ impl eframe::App for App {
                 ctx.request_repaint_after(std::time::Duration::from_millis(200));
             }
         }
-        if self.busy && ctx.input(|i| i.viewport().close_requested()) {
+        let screenshot_preview = cfg!(debug_assertions)
+            && std::env::var_os("WHOOSH_UI_PREVIEW").is_some()
+            && std::env::var_os("WHOOSH_UI_SCREENSHOT").is_some();
+        if self.busy && !screenshot_preview && ctx.input(|i| i.viewport().close_requested()) {
             ctx.send_viewport_cmd(egui::ViewportCommand::CancelClose);
             self.error = Some(
                 "Une opération est en cours. Annulez-la et attendez sa fin avant de fermer.".into(),
@@ -678,7 +692,7 @@ impl eframe::App for App {
                             }
                             ui.separator();
                             ui.collapsing(t("À propos"), |ui| {
-                                ui.label("Whoosh Bridge 0.1.0");
+                                ui.label(format!("Whoosh Bridge {}", env!("CARGO_PKG_VERSION")));
                                 ui.label(t(
                                     "Application indépendante. Non affiliée à Garmin ou MyWhoosh.",
                                 ));
@@ -729,23 +743,48 @@ impl eframe::App for App {
                     .inner_margin(egui::Margin::symmetric(28, 18)),
             )
             .show(ctx, |ui| {
-                if let Some(error) = &self.error {
-                    ui.add(egui::Label::new(RichText::new(t(error)).color(design::RED)).wrap());
+                if let Some(error) = self.error.clone() {
+                    egui::Frame::new()
+                        .fill(Color32::from_rgb(255, 241, 241))
+                        .corner_radius(10)
+                        .inner_margin(10)
+                        .show(ui, |ui| {
+                            ui.horizontal(|ui| {
+                                let width = (ui.available_width() - 42.0).max(100.0);
+                                ui.add_sized(
+                                    [width, 0.0],
+                                    egui::Label::new(RichText::new(t(error)).color(design::RED))
+                                        .wrap(),
+                                );
+                                if ui
+                                    .button("×")
+                                    .on_hover_text(t("Fermer le message"))
+                                    .clicked()
+                                {
+                                    self.error = None;
+                                }
+                            });
+                        });
                     ui.add_space(6.0);
                 }
                 ui.horizontal(|ui| {
-                    ui.vertical(|ui| {
-                        let label = if self.selected.is_empty() {
-                            "Choisissez vos sorties".into()
-                        } else {
-                            format!("{} sortie(s) vers Garmin Connect", self.selected.len())
-                        };
-                        ui.label(RichText::new(t(label)).strong());
-                        ui.add(
-                            egui::Label::new(RichText::new(t(&self.status)).small().weak())
-                                .truncate(),
-                        );
-                    });
+                    let status_width = (ui.available_width() - 260.0).max(100.0);
+                    ui.allocate_ui_with_layout(
+                        egui::vec2(status_width, 44.0),
+                        egui::Layout::top_down(egui::Align::Min),
+                        |ui| {
+                            let label = if self.selected.is_empty() {
+                                "Choisissez vos sorties".into()
+                            } else {
+                                format!("{} sortie(s) vers Garmin Connect", self.selected.len())
+                            };
+                            ui.label(RichText::new(t(label)).strong());
+                            ui.add(
+                                egui::Label::new(RichText::new(t(&self.status)).small().weak())
+                                    .truncate(),
+                            );
+                        },
+                    );
                     ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
                         if self.busy {
                             if ui.button(t("Annuler")).clicked() {
@@ -799,27 +838,31 @@ impl eframe::App for App {
                 ui.add_enabled_ui(!self.busy && !self.confirm && !self.mfa_open, |ui| {
                     let available = ui.available_size();
                     let right = 330.0;
+                    let gap = 20.0;
+                    let left = (available.x - right - gap).max(300.0);
                     ui.horizontal_top(|ui| {
+                        ui.spacing_mut().item_spacing.x = gap;
                         ui.allocate_ui_with_layout(
-                            egui::vec2((available.x - right - 20.0).max(300.0), available.y),
+                            egui::vec2(left, available.y),
                             egui::Layout::top_down(egui::Align::Min),
                             |ui| {
                                 design::surface().show(ui, |ui| {
-                                    ui.set_min_height((available.y - 46.0).max(250.0));
+                                    ui.set_width(left - 42.0);
+                                    ui.set_min_height((available.y - 42.0).max(250.0));
                                     self.rides(ui);
                                 });
                             },
                         );
-                        ui.add_space(10.0);
                         ui.allocate_ui_with_layout(
                             egui::vec2(right, available.y),
                             egui::Layout::top_down(egui::Align::Min),
                             |ui| {
                                 design::surface().show(ui, |ui| {
-                                    ui.set_width(right - 46.0);
+                                    ui.set_width(right - 42.0);
+                                    ui.set_min_height((available.y - 42.0).max(250.0));
                                     egui::ScrollArea::vertical()
                                         .id_salt("destination")
-                                        .max_height(available.y - 46.0)
+                                        .max_height((available.y - 42.0).max(100.0))
                                         .show(ui, |ui| self.destination(ui));
                                 });
                             },
@@ -837,21 +880,29 @@ impl eframe::App for App {
                     ui.label(t("Saisissez le code de vérification envoyé par Garmin."));
                     ui.add(
                         egui::TextEdit::singleline(&mut self.mfa_code)
-                            .hint_text(t("Code de vérification")),
+                            .hint_text(t("Code de vérification"))
+                            .margin(egui::vec2(12.0, 10.0))
+                            .desired_width(f32::INFINITY),
                     );
-                    if ui
-                        .add_enabled(
-                            !self.mfa_code.trim().is_empty(),
-                            egui::Button::new(t("Valider le code")),
-                        )
-                        .clicked()
-                    {
-                        let _ = self
-                            .worker
-                            .mfa
-                            .send(Some(std::mem::take(&mut self.mfa_code).trim().into()));
-                        self.mfa_open = false;
-                    }
+                    ui.horizontal(|ui| {
+                        if ui
+                            .add_enabled(
+                                !self.mfa_code.trim().is_empty(),
+                                design::primary("Valider le code"),
+                            )
+                            .clicked()
+                        {
+                            let _ = self
+                                .worker
+                                .mfa
+                                .send(Some(std::mem::take(&mut self.mfa_code).trim().into()));
+                            self.mfa_open = false;
+                        }
+                        if ui.button(t("Annuler")).clicked() {
+                            let _ = self.worker.mfa.send(None);
+                            self.mfa_open = false;
+                        }
+                    });
                 });
         }
         if self.confirm {

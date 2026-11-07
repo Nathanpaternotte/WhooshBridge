@@ -27,7 +27,7 @@ impl std::fmt::Display for AuthRequired {
 impl std::error::Error for AuthRequired {}
 
 pub enum Command {
-    Restore,
+    Restore(bool),
     WhooshLogin(String, String, bool),
     GarminLogin(String, String),
     Page(usize),
@@ -35,6 +35,8 @@ pub enum Command {
     Disconnect,
 }
 pub enum Event {
+    Preferences(crate::session_store::DevicePreferences),
+    WhooshCredentials(String, String),
     AuthRequired(&'static str),
     Activities(Vec<Activity>, usize),
     GarminReady,
@@ -64,10 +66,17 @@ impl Worker {
             };
             let mut whoosh = None;
             let mut garmin = None;
+            let mut whoosh_credentials_loaded = false;
             for request in requests {
                 let result: Result<()> = (|| {
                     match request {
-                        Command::Restore => {
+                        Command::Restore(initial) => {
+                            if initial {
+                                match crate::session_store::load_devices() {
+                                    Ok(value) => emit(Event::Preferences(value)),
+                                    Err(error) => emit(Event::Error(error.to_string())),
+                                }
+                            }
                             if garmin.is_none() {
                                 let restored: Result<()> = (|| {
                                     let mut session = Garmin::start()?;
@@ -209,6 +218,16 @@ impl Worker {
                             garmin = None;
                         } else {
                             whoosh = None;
+                            if !whoosh_credentials_loaded {
+                                whoosh_credentials_loaded = true;
+                                match crate::session_store::load_whoosh() {
+                                    Ok(Some((email, password))) => {
+                                        emit(Event::WhooshCredentials(email, password))
+                                    }
+                                    Ok(None) => (),
+                                    Err(error) => emit(Event::Error(error.to_string())),
+                                }
+                            }
                         }
                         emit(Event::AuthRequired(a.0));
                     } else {

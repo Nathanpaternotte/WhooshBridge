@@ -8,7 +8,7 @@ User documentation: [English](../README.md) · [Français](../README.fr.md).
 
 - `main.rs`, `design.rs`: egui interface; no account calls on the UI rendering path.
 - `i18n.rs`, `locales/en.json`: render-time translations. French is the source
-  language. Initial language follows macOS; a menu override is saved in Keychain.
+  language. Initial language follows macOS; a menu override is saved in local preferences.
   Activity names, email addresses and numeric identifiers are not translated.
 - `mywhoosh.rs`, `web_session.rs`, `bin/whoosh-web-login.rs`: official-site WebKit
   sign-in, persistent website session, activity listing and downloads. Website
@@ -17,7 +17,12 @@ User documentation: [English](../README.md) · [Français](../README.fr.md).
   garminconnect/garth. Credentials and tokens travel through private pipes,
   never process arguments. Uploaded/duplicate/received are distinct outcomes.
 - `session_store.rs`: macOS Keychain service `com.mywhooshbridge.sessions`;
-  `garmin`, `mywhoosh.credentials`, `garmin.device_preferences` accounts.
+  `garmin` and `mywhoosh.credentials` accounts. Recorder/language preferences use
+  `~/Library/Application Support/Whoosh Bridge/preferences.json` (atomic writes,
+  mode 0600). The legacy `garmin.device_preferences` item is read once for migration
+  and retained; a denied migration never overwrites existing preferences.
+  Startup reads run on the worker, not the UI thread. MyWhoosh credentials are
+  loaded only after its website session requires authentication.
 - `fit.rs`, `fit_summary.rs`, `fit_identity.rs`: binary FIT parsing, validation,
   conservative summary repair and recorder identity normalization.
 - `devices.rs`: Edge catalogue and declared firmware; source links and audited
@@ -100,18 +105,19 @@ WHOOSH_UI_LANGUAGE=en WHOOSH_UI_PREVIEW=rides \
 ```
 
 Use `fr` for French, `WHOOSH_UI_SMALL=1` for the minimum window, and
-`WHOOSH_UI_PREVIEW=empty|rides|confirm|error` for preview states.
+`WHOOSH_UI_PREVIEW=empty|rides|confirm|error|mfa|loading|no-rides` for preview states.
 
 ## Diagnostics and storage
 
 Logs: `~/Library/Logs/Whoosh Bridge/connection.log`. Only fixed operation categories
 and validated HTTP statuses are logged, not raw service responses or secrets.
 Keychain write failures are shown without turning an already-confirmed upload
-into an apparent failure. Transient network errors preserve sessions.
+into an apparent failure. Identical Garmin tokens are not rewritten; a failed
+save is not repeatedly retried during that session. Transient network errors preserve sessions.
 
 Unit IDs are saved after 800 ms without typing, on focus loss, before transfer and
 on normal exit. Clearing the field removes that model's saved ID. A Keychain read
-failure prevents overwriting preferences. Account logout preserves device preferences.
+failure during migration prevents overwriting preferences. Account logout preserves device preferences.
 
 Never add real FIT files, logs, cookies, token stores, `.env`, Keychain dumps or
 account screenshots to the repository. Use synthetic fixtures and preview mode.

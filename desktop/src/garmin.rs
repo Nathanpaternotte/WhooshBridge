@@ -16,6 +16,7 @@ pub enum UploadOutcome {
 
 pub struct Garmin {
     pub persistence_failed: bool,
+    saved_tokens: Option<String>,
     child: Child,
     input: ChildStdin,
     output: Receiver<String>,
@@ -57,6 +58,7 @@ impl Garmin {
         });
         Ok(Self {
             persistence_failed: false,
+            saved_tokens: None,
             child,
             input,
             output,
@@ -107,10 +109,14 @@ impl Garmin {
             self.persistence_failed = true;
         }
         if let Some(tokens) = response["tokens"].as_str() {
-            if crate::session_store::save(tokens).is_err() {
-                // Do not turn a confirmed upload into an apparent failure.
-                crate::diagnostics::record("garmin.session", "keychain_save_failed");
-                self.persistence_failed = true;
+            if !self.persistence_failed && self.saved_tokens.as_deref() != Some(tokens) {
+                if crate::session_store::save(tokens).is_err() {
+                    // Do not turn a confirmed upload into an apparent failure.
+                    crate::diagnostics::record("garmin.session", "keychain_save_failed");
+                    self.persistence_failed = true;
+                } else {
+                    self.saved_tokens = Some(tokens.to_owned());
+                }
             }
         }
         if response["type"] == "auth_required" {
@@ -128,6 +134,7 @@ impl Garmin {
         let Some(tokens) = crate::session_store::load()? else {
             return Ok(false);
         };
+        self.saved_tokens = Some(tokens.clone());
         self.send(json!({"op":"resume", "tokens":tokens}))?;
         let response = self.receive()?;
         anyhow::ensure!(

@@ -2,12 +2,13 @@ use crate::i18n::t;
 use eframe::egui::{self, Color32, RichText, Stroke, Vec2};
 pub const BLUE: Color32 = Color32::from_rgb(0, 106, 245);
 pub const INK: Color32 = Color32::from_rgb(30, 34, 43);
-pub const SECONDARY: Color32 = Color32::from_rgb(112, 117, 130);
+pub const SECONDARY: Color32 = Color32::from_rgb(91, 101, 119);
 pub const GREEN: Color32 = Color32::from_rgb(30, 139, 93);
 pub const RED: Color32 = Color32::from_rgb(196, 52, 66);
 pub const BACKGROUND: Color32 = Color32::from_rgb(243, 245, 250);
 
 pub fn install(ctx: &egui::Context) {
+    ctx.set_theme(egui::Theme::Light);
     let mut fonts = egui::FontDefinitions::default();
     if let Ok(bytes) = std::fs::read("/System/Library/Fonts/SFNS.ttf") {
         fonts
@@ -25,12 +26,14 @@ pub fn install(ctx: &egui::Context) {
     v.window_fill = Color32::WHITE;
     v.override_text_color = Some(INK);
     v.weak_text_color = Some(SECONDARY);
+    v.text_edit_bg_color = Some(Color32::from_rgb(247, 249, 252));
+    v.widgets.noninteractive.bg_stroke = Stroke::new(1.0_f32, Color32::from_rgb(214, 221, 232));
     v.extreme_bg_color = Color32::from_rgb(241, 243, 248);
     v.faint_bg_color = Color32::from_rgb(247, 249, 252);
     v.selection.bg_fill = Color32::from_rgb(224, 237, 255);
     v.selection.stroke = Stroke::new(1.0_f32, BLUE);
     v.hyperlink_color = BLUE;
-    v.window_corner_radius = 22.into();
+    v.window_corner_radius = 16.into();
     v.menu_corner_radius = 16.into();
     v.window_stroke = Stroke::new(1.0_f32, Color32::WHITE);
     for w in [
@@ -40,7 +43,7 @@ pub fn install(ctx: &egui::Context) {
         &mut v.widgets.open,
     ] {
         w.corner_radius = 10.into();
-        w.bg_stroke = Stroke::NONE;
+        w.bg_stroke = Stroke::new(1.0_f32, Color32::from_rgb(214, 221, 232));
         w.fg_stroke = Stroke::new(1.0_f32, INK);
     }
     v.widgets.inactive.bg_fill = Color32::from_rgb(233, 237, 244);
@@ -50,10 +53,11 @@ pub fn install(ctx: &egui::Context) {
     v.widgets.active.bg_fill = Color32::from_rgb(205, 224, 251);
     ctx.set_visuals(v);
     let mut style = (*ctx.style()).clone();
-    style.spacing.item_spacing = Vec2::new(10.0, 10.0);
-    style.spacing.button_padding = Vec2::new(14.0, 9.0);
-    style.spacing.interact_size.y = 34.0;
+    style.spacing.item_spacing = Vec2::new(10.0, 8.0);
+    style.spacing.button_padding = Vec2::new(12.0, 7.0);
+    style.spacing.interact_size.y = 30.0;
     style.spacing.text_edit_width = 240.0;
+    style.wrap_mode = Some(egui::TextWrapMode::Wrap);
     style
         .text_styles
         .insert(egui::TextStyle::Body, egui::FontId::proportional(14.0));
@@ -62,7 +66,7 @@ pub fn install(ctx: &egui::Context) {
         .insert(egui::TextStyle::Button, egui::FontId::proportional(14.0));
     style
         .text_styles
-        .insert(egui::TextStyle::Heading, egui::FontId::proportional(23.0));
+        .insert(egui::TextStyle::Heading, egui::FontId::proportional(21.0));
     style
         .text_styles
         .insert(egui::TextStyle::Small, egui::FontId::proportional(12.0));
@@ -70,10 +74,10 @@ pub fn install(ctx: &egui::Context) {
 }
 pub fn surface() -> egui::Frame {
     egui::Frame::new()
-        .fill(Color32::from_white_alpha(238))
-        .corner_radius(22)
-        .stroke(Stroke::new(1.0_f32, Color32::WHITE))
-        .inner_margin(22)
+        .fill(Color32::WHITE)
+        .corner_radius(16)
+        .stroke(Stroke::new(1.0_f32, Color32::from_rgb(225, 230, 239)))
+        .inner_margin(20)
         .shadow(egui::Shadow {
             offset: [0, 4],
             blur: 18,
@@ -101,7 +105,7 @@ pub fn pill(ui: &mut egui::Ui, text: &str, connected: bool) {
 pub fn primary(text: impl Into<String>) -> egui::Button<'static> {
     egui::Button::new(RichText::new(t(text.into())).color(Color32::WHITE).strong())
         .fill(BLUE)
-        .corner_radius(30)
+        .corner_radius(10)
         .min_size(Vec2::new(0.0, 42.0))
 }
 
@@ -114,4 +118,15 @@ pub fn icon_data() -> egui::IconData {
         height: image.height(),
         rgba: image.into_raw(),
     }
+}
+
+pub fn checkbox(ui: &mut egui::Ui, checked: &mut bool, text: &str) -> egui::Response {
+    ui.scope(|ui| {
+        let widgets = &mut ui.visuals_mut().widgets;
+        widgets.inactive.corner_radius = 4.into();
+        widgets.hovered.corner_radius = 4.into();
+        widgets.active.corner_radius = 4.into();
+        ui.checkbox(checked, text)
+    })
+    .inner
 }

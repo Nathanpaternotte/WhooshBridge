@@ -13,7 +13,7 @@ Read `desktop/README.md` for architecture and FIT behavior.
   MyWhoosh website session and WebKit helper. Preserve CAPTCHA and consent handling.
 - `desktop/src/garmin.rs`, `desktop/bridge/garmin_bridge.py`: JSON-lines protocol,
   Garmin authentication, session persistence and upload outcome classification.
-- `desktop/src/session_store.rs`: macOS Keychain credentials and device preferences.
+- `desktop/src/session_store.rs`: macOS Keychain credentials and private local device preferences.
 - `desktop/src/fit*.rs`, `devices.rs`: conservative FIT editing and Edge profiles.
 - `desktop/tests/device_catalog_audit.json`: device and firmware source evidence.
 

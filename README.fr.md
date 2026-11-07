@@ -11,7 +11,7 @@ Application macOS permettant de choisir ses sorties MyWhoosh, de préparer leurs
 
 - Connexion au site officiel MyWhoosh, sélection des sorties et transfert vers Garmin Connect.
 - Sélecteur de 13 modèles Edge avec **Product ID automatique** et versions logicielles publiées par Garmin.
-- **Unit ID personnel obligatoire**, mémorisé par modèle dans le trousseau macOS.
+- **Unit ID personnel obligatoire**, mémorisé par modèle sur ce Mac.
 - Sessions conservées entre les ouvertures ; une panne réseau ne supprime pas la connexion enregistrée.
 - Identifiants MyWhoosh mémorisables dans le trousseau pour préremplir le site officiel. Le CAPTCHA et les choix de consentement restent manuels.
 - Mesures et accessoires conservés, moyennes manquantes complétées et températures virtuelles retirées.
@@ -70,7 +70,9 @@ Vos originaux MyWhoosh ne sont pas modifiés. Les activités déjà présentes s
 
 ## Données enregistrées
 
-Les jetons Garmin, les identifiants MyWhoosh optionnels, les Unit ID et la langue sont conservés dans le trousseau macOS. MyWhoosh utilise aussi un stockage WebKit persistant. Déconnecter les comptes efface les sessions et identifiants de connexion, mais conserve les réglages des appareils. Effacer le champ Unit ID oublie la valeur de ce modèle.
+Les jetons Garmin et les identifiants MyWhoosh optionnels sont conservés dans le trousseau macOS. Les Unit ID, le modèle et la langue sont enregistrés dans un fichier local privé : `~/Library/Application Support/Whoosh Bridge/preferences.json`. Les anciens réglages sont repris du trousseau une seule fois ; leur ancienne entrée est conservée pour les versions précédentes. MyWhoosh utilise aussi un stockage WebKit persistant. Déconnecter les comptes efface les sessions et identifiants de connexion, mais conserve les réglages des appareils. Effacer le champ Unit ID oublie la valeur de ce modèle.
+
+Si macOS demande un accès au trousseau, **Toujours autoriser** mémorise l’autorisation pour cette identité de l’app ; **Autoriser** ne vaut que pour cet accès. La signature locale actuelle change après reconstruction du binaire et peut entraîner une nouvelle demande. Une signature Developer ID stable est nécessaire pour conserver une identité fiable entre les versions. Les identifiants MyWhoosh ne sont lus que lorsqu’une reconnexion au site est nécessaire.
 
 L’application ne lit pas d’identifiants dans un fichier `.env`. Les fichiers FIT temporaires sont nettoyés après traitement ; les journaux de diagnostic ne contiennent pas les mots de passe ou jetons.
 

@@ -11,7 +11,7 @@ A macOS app that lets you select MyWhoosh cycling activities, prepare their FIT 
 
 - Browse and select your MyWhoosh rides through the official MyWhoosh website sign-in flow.
 - Choose one of 13 verified Edge profiles. The Product ID is set automatically.
-- Associate your personal **Unit ID**, remembered separately for each model in macOS Keychain.
+- Associate your personal **Unit ID**, remembered separately for each model on this Mac.
 - Keep Garmin sessions in Keychain and MyWhoosh sessions in a persistent WebKit store. Reauthentication is requested when the session is missing or rejected, not on every launch.
 - Optionally store your MyWhoosh email/password in Keychain to prefill the official login window. CAPTCHA and consent remain under your control.
 - Preserve recorded measurements and accessory identities, repair missing averages, remove virtual temperatures, and normalize recorder metadata.
@@ -90,11 +90,18 @@ Sources are recorded per model in [the catalogue audit](desktop/tests/device_cat
 
 ## Privacy and storage
 
-- Garmin tokens, optional MyWhoosh credentials, Unit IDs and language preferences use macOS Keychain (`com.mywhooshbridge.sessions`).
+- Garmin tokens and optional MyWhoosh credentials use macOS Keychain (`com.mywhooshbridge.sessions`).
+- Unit IDs, selected model and language are stored in a private local preferences file at `~/Library/Application Support/Whoosh Bridge/preferences.json`. Existing preferences are migrated from Keychain once; the legacy item is retained for older app versions.
 - MyWhoosh website cookies/session storage use the app’s persistent WebKit data store.
 - **Disconnect accounts** removes saved account sessions/credentials and clears the WebKit store. Device preferences remain; clearing the Unit ID field forgets that model’s saved ID.
 - Temporary FIT files are removed after processing. Diagnostic logs contain operation categories, not passwords or tokens.
 - The app does not read credentials from `.env` files.
+
+If macOS asks to access a saved credential, **Always Allow** remembers permission for
+that app identity; **Allow** authorizes only that access. The current ad-hoc signature
+changes when the binary is rebuilt, so a new build can prompt again. A stable Developer
+ID signing identity is needed for reliable trust across releases. MyWhoosh credentials
+are read only when its saved website session requires sign-in, not on every launch.
 
 See [development and architecture](desktop/README.md) for tests, log location, localization and FIT processing details.
 

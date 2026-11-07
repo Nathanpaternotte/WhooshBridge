@@ -167,5 +167,15 @@
   "Logiciel libre sous GPL-3.0, sans garantie.": "Free software under GPL-3.0, without warranty.",
   "Crédits et code source": "Credits and source code",
   "1. Ouvrez Plus → Appareils Garmin.\n2. Faites un appui long sur le nom de votre appareil.\n3. Recopiez Device ID sur iPhone ou Unit ID sur Android.": "1. Open More → Garmin Devices.\n2. Press and hold your device name.\n3. Copy Device ID on iPhone or Unit ID on Android.",
-  "Reconnectez-vous à Garmin Connect.": "Sign in to Garmin Connect again."
+  "Reconnectez-vous à Garmin Connect.": "Sign in to Garmin Connect again.",
+  "Enregistré automatiquement sur ce Mac.": "Saved automatically on this Mac.",
+  "Aucune sortie disponible pour le moment.": "No rides available yet.",
+  "Dossier utilisateur introuvable": "User folder not found",
+  "Lecture des réglages locaux impossible": "Unable to read local preferences",
+  "Réglages locaux illisibles ; le fichier existant a été conservé": "Local preferences could not be read; the existing file was preserved",
+  "Dossier des réglages absent": "Preferences folder is missing",
+  "Création du dossier des réglages impossible": "Unable to create the preferences folder",
+  "Enregistrement des réglages locaux impossible": "Unable to save local preferences",
+  "Product ID : {} · FIT {}.{:02}": "Product ID: {} · FIT {}.{:02}",
+  "Fermer le message": "Dismiss message"
 }
