@@ -30,7 +30,7 @@ Whoosh Bridge was **vibe coded**: its desktop app was developed iteratively with
 - MyWhoosh and Garmin Connect accounts.
 - The numeric Unit ID of your Garmin device. The **i** button next to the field explains where to find it.
 
-To build: a recent stable Rust toolchain, Xcode Command Line Tools, and Python 3.11+ (Python 3.12 recommended). The built app bundles its Python Garmin component; users do not need to install Python separately.
+To build: Rust 1.88 or newer (current stable recommended), Xcode Command Line Tools, and Python 3.11+ (Python 3.12 recommended). The built app bundles its Python Garmin component; users do not need to install Python separately.
 
 ## Build and launch
 
@@ -44,9 +44,11 @@ open "desktop/target/macos/Whoosh Bridge.app"
 
 The build downloads dependencies and creates a bundle for the Mac’s current architecture. It is locally/ad-hoc signed, **not Developer ID signed or notarized**. Public binary distribution needs a separate signing/notarization step.
 
-For development:
+For development and checks, also install Node.js (CI uses Node.js 22) and the Rust
+`rustfmt` and `clippy` components:
 
 ```bash
+rustup component add rustfmt clippy
 python3.12 -m venv venv
 venv/bin/python -m pip install -r desktop/requirements-test.txt
 cargo build --manifest-path desktop/Cargo.toml --locked --bins
@@ -125,9 +127,9 @@ bash scripts/package-app.sh
 python3 scripts/prepare-source.py
 ```
 
-Archives are written to `dist/`. Upload the `macos-*.zip` file as a GitHub
-Release asset for end users; the source archive is for developers.
-Source export works before the new Git repository is initialized.
+Archives are written to `dist/`. Upload `Whoosh-Bridge-<version>-macos-<arch>.zip` as a GitHub Release asset
+for end users; packaging also creates its `.sha256` checksum.
+`Whoosh-Bridge-source.zip` is for developers. Source export does not require Git.
 
 ## Credits and license
 

@@ -48,6 +48,9 @@ Real Garmin physiological processing must be verified independently of local tes
 
 ## Build
 
+Run the commands below from the repository root. Build prerequisites are listed
+in the [main README](../README.md#requirements).
+
 ```bash
 WHOOSH_PYTHON="$(command -v python3.12)" bash desktop/scripts/build-macos.sh
 ```
@@ -63,11 +66,16 @@ To regenerate the icon on macOS:
 swift desktop/scripts/generate-icon.swift
 ```
 
-The script writes `assets/icon.svg`, `assets/icon.png`, `assets/WhooshBridge.icns`.
+The script writes `desktop/assets/icon.svg`, `desktop/assets/icon.png`, and
+`desktop/assets/WhooshBridge.icns`.
 The editable paths are original project artwork. The system font is loaded from
 macOS at runtime; no Apple font is copied into the bundle or repository.
 
 ## Offline checks
+
+Install `desktop/requirements-test.txt` in the root `venv`, Node.js (CI uses 22),
+and the Rust `rustfmt` and `clippy` components first. `bash scripts/check.sh` runs
+all checks below.
 
 ```bash
 cargo fmt --manifest-path desktop/Cargo.toml --check

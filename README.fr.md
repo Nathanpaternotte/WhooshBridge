@@ -26,7 +26,7 @@ Whoosh Bridge a été **vibe codé** : son application de bureau a été dévelo
 
 ## Construire et lancer
 
-Prérequis : macOS 14+, Rust stable récent, outils de ligne de commande Xcode et Python 3.11+ (3.12 recommandé).
+Prérequis : macOS 14+, Rust 1.88 ou plus récent (version stable actuelle recommandée), outils de ligne de commande Xcode et Python 3.11+ (3.12 recommandé).
 
 ```bash
 WHOOSH_PYTHON="$(command -v python3.12)" bash desktop/scripts/build-macos.sh
@@ -37,7 +37,11 @@ Le paquet inclut le composant Python nécessaire à Garmin. Il est construit pou
 
 ## Vérification et distribution
 
+Les vérifications nécessitent aussi Node.js (version 22 utilisée en CI) et les
+composants Rust `rustfmt` et `clippy`.
+
 ```bash
+rustup component add rustfmt clippy
 python3.12 -m venv venv
 venv/bin/python -m pip install -r desktop/requirements-test.txt
 bash scripts/check.sh
@@ -46,9 +50,10 @@ bash scripts/package-app.sh
 python3 scripts/prepare-source.py
 ```
 
-Les archives sont créées dans `dist/`. Le ZIP `macos-*.zip` contient l’app prête
-à utiliser et doit être joint à la release GitHub. L’archive `source.zip` contient
-le code. L’export fonctionne sans dépôt Git initialisé.
+Les archives sont créées dans `dist/`. Le ZIP
+`Whoosh-Bridge-<version>-macos-<arch>.zip` contient l’app prête à utiliser et doit
+être joint à la release GitHub ; son empreinte `.sha256` est également créée.
+L’archive `Whoosh-Bridge-source.zip` contient le code. L’export ne nécessite pas Git.
 
 Le projet est centré sur `desktop/` : application Rust, composant Garmin Python,
 ressources et tests. L’ancien CLI Python, ses services inutilisés et ses tests ont
