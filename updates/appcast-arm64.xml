@@ -1,0 +1,20 @@
+<?xml version="1.0" standalone="yes"?><!-- sparkle-sign-warning:
+IMPORTANT: This file was signed by Sparkle. Any modifications to this file requires re-signing this file with generate_appcast or sign_update! The signed signature will be embedded at the end of this file.
+--><rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>Whoosh Bridge</title>
+        <item>
+            <title>0.1.0-alpha.3</title>
+            <pubDate>Sat, 07 Nov 2026 13:14:19 +0100</pubDate>
+            <link>https://github.com/aervyn96/WhooshBridge</link>
+            <sparkle:version>3</sparkle:version>
+            <sparkle:shortVersionString>0.1.0-alpha.3</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <enclosure url="https://github.com/aervyn96/WhooshBridge/releases/download/v0.1.0-alpha.3/Whoosh-Bridge-0.1.0-alpha.3-macos-arm64.zip" length="24116259" type="application/octet-stream" sparkle:edSignature="jfmvWaSl9h1xC0YWli6F8ljgK8iKvU1yiMXFkTRunQ8D0ktx7MKvmZyEgydc1LMD3Wo18ZVSypDsvS2G9QH7Cg=="></enclosure>
+        </item>
+    </channel>
+</rss><!-- sparkle-signatures:
+edSignature: oQKgzSA4sHN5RnhMpnK2YfZ8DHEN0ZelPAq77L9TySMyd3LE1EegIrWKZe+7GWUGCg/+TSE1YUer0sYSRpl9Cw==
+length: 1245
+-->

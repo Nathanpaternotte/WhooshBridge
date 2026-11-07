@@ -90,6 +90,24 @@ ressources et tests. L’ancien CLI Python, ses services inutilisés et ses test
 
 Vos originaux MyWhoosh ne sont pas modifiés. Les activités déjà présentes sur Garmin ne sont ni réécrites ni supprimées.
 
+## Mises à jour de l’app
+
+L’app distribuée intègre **Sparkle** : ouvrez **••• → Rechercher des mises à jour…**,
+ou laissez **Vérifier automatiquement les mises à jour** activé pour une
+vérification quotidienne. Si une version est disponible, Sparkle propose de la
+télécharger, de l’installer et de relancer l’app. L’installation attend la fin des
+opérations sur les activités. Les anciennes versions sans Sparkle nécessitent
+une première installation manuelle d’une version qui l’intègre.
+
+Les flux de versions et les archives sont signés cryptographiquement et hébergés
+sur GitHub. Les recherches de mises à jour n’envoient aucun identifiant Garmin ou
+MyWhoosh ni aucune donnée d’activité ; GitHub reçoit les métadonnées habituelles
+de connexion. Ce mécanisme ne remplace pas la signature Apple ou la notarisation,
+et une mise à jour peut entraîner une nouvelle demande d’accès au trousseau.
+
+Pour publier : voir la [procédure de release](updates/README.md). Le canal devient
+disponible une fois le flux signé et son archive de release publiés.
+
 ## Données enregistrées
 
 **Whoosh Bridge ne collecte pas vos identifiants de connexion et ne les envoie ni à son développeur ni à un serveur intermédiaire.** Les jetons de session Garmin et les identifiants MyWhoosh optionnels sont enregistrés localement dans le trousseau de votre Mac (Keychain). Les identifiants et jetons servent à vous authentifier directement auprès de Garmin et MyWhoosh : ils sont nécessairement transmis au service concerné lors de la connexion ou des requêtes authentifiées.

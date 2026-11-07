@@ -48,3 +48,12 @@ the root GPL license does not replace them.
 Garmin and MyWhoosh names/trademarks remain the property of their respective
 owners. No endorsement or official partnership is claimed. The blue bridge icon
 is original project artwork, not a Garmin or MyWhoosh logo.
+
+## Sparkle
+
+The macOS app embeds [Sparkle](https://sparkle-project.org/), the open-source
+software update framework, pinned in `desktop/update-config.json`.
+Sparkle is distributed under its permissive license; the complete upstream
+license and bundled component notices are included in the app at
+`Contents/Resources/Sparkle-LICENSE.txt` and in the framework's resources.
+The update signing key is independent of Apple Developer ID signing.

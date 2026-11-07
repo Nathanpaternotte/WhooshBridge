@@ -177,5 +177,9 @@
   "Création du dossier des réglages impossible": "Unable to create the preferences folder",
   "Enregistrement des réglages locaux impossible": "Unable to save local preferences",
   "Product ID : {} · FIT {}.{:02}": "Product ID: {} · FIT {}.{:02}",
-  "Fermer le message": "Dismiss message"
+  "Fermer le message": "Dismiss message",
+  "Installation de la mise à jour…": "Installing the update…",
+  "Rechercher des mises à jour…": "Check for updates…",
+  "Vérifier automatiquement les mises à jour": "Automatically check for updates",
+  "Mises à jour disponibles dans l’app installée": "Updates available in the installed app"
 }

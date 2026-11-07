@@ -110,6 +110,22 @@ These names and identifiers were checked against Garmin’s official FIT profile
 
 Sources are recorded per model in [the catalogue audit](desktop/tests/device_catalog_audit.json). Additional regional or hardware variants are not automatically inferred from a Unit ID.
 
+## App updates
+
+The packaged app includes **Sparkle**: use **••• → Check for updates…**, or leave
+**Automatically check for updates** enabled for daily checks. When an update is
+available, Sparkle offers to download, install and relaunch the app. Installation
+waits for any activity operation to finish. Existing versions without Sparkle
+need one manual installation of a version that includes it.
+
+Update feeds and archives are cryptographically signed and hosted on GitHub.
+Update requests send no Garmin/MyWhoosh credentials or activity data; GitHub
+receives ordinary connection metadata. This does not replace Apple signing or
+notarization, and Keychain permissions may be requested again after an update.
+
+Maintainers: see [the release procedure](updates/README.md). The update channel
+becomes available once the signed feed and its Release archive are published.
+
 ## Privacy and storage
 
 **Whoosh Bridge does not collect your login credentials or send them to its developer or an intermediary server.** Saved Garmin session tokens and optional MyWhoosh credentials are stored locally in your Mac’s Keychain. Credentials and session tokens are used to authenticate directly with Garmin and MyWhoosh: they are necessarily transmitted to the relevant service when signing in or making authenticated requests.

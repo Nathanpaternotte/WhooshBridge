@@ -8,6 +8,7 @@ mod i18n;
 mod mywhoosh;
 mod session_store;
 mod unit_help;
+mod updater;
 mod web_session;
 mod worker;
 
@@ -28,6 +29,7 @@ struct Credentials {
 }
 struct App {
     worker: Worker,
+    updater: Option<updater::Updater>,
     icon: egui::TextureHandle,
     garmin: Credentials,
     whoosh: Credentials,
@@ -75,6 +77,11 @@ impl App {
         let mut app = Self {
             icon,
             worker,
+            updater: if preview {
+                None
+            } else {
+                updater::Updater::load()
+            },
             whoosh_needs_login: false,
             garmin_needs_login: false,
             garmin: Credentials::default(),
@@ -201,6 +208,12 @@ impl App {
     fn dispatch(&mut self, command: Command, status: &str) {
         if cfg!(debug_assertions) && std::env::var_os("WHOOSH_UI_PREVIEW").is_some() {
             return;
+        }
+        if let Some(updater) = &self.updater {
+            if updater.installing() {
+                return;
+            }
+            updater.set_busy(true);
         }
         self.error = None;
         self.busy = true;
@@ -652,6 +665,18 @@ impl eframe::App for App {
             }
         }
         self.events();
+        if let Some(updater) = &self.updater {
+            updater.set_busy(self.busy);
+            if updater.installing() {
+                self.save_device_preferences();
+                egui::CentralPanel::default().show(ctx, |ui| {
+                    ui.spinner();
+                    ui.label(t("Installation de la mise à jour…"));
+                });
+                ctx.request_repaint_after(std::time::Duration::from_millis(100));
+                return;
+            }
+        }
         if let Some(changed) = self.unit_changed {
             if changed.elapsed() >= std::time::Duration::from_millis(800) {
                 self.save_device_preferences();
@@ -689,6 +714,36 @@ impl eframe::App for App {
                             if english != before {
                                 i18n::set_english(english);
                                 self.save_device_preferences();
+                            }
+                            ui.separator();
+                            if let Some(updater) = &self.updater {
+                                if ui
+                                    .add_enabled(
+                                        !self.busy && updater.can_check(),
+                                        egui::Button::new(t("Rechercher des mises à jour…")),
+                                    )
+                                    .clicked()
+                                {
+                                    updater.check();
+                                    ui.close();
+                                }
+                                let mut automatic = updater.automatic();
+                                if ui
+                                    .checkbox(
+                                        &mut automatic,
+                                        t("Vérifier automatiquement les mises à jour"),
+                                    )
+                                    .changed()
+                                {
+                                    updater.set_automatic(automatic);
+                                }
+                            } else {
+                                ui.add_enabled(
+                                    false,
+                                    egui::Button::new(t(
+                                        "Mises à jour disponibles dans l’app installée",
+                                    )),
+                                );
                             }
                             ui.separator();
                             ui.collapsing(t("À propos"), |ui| {

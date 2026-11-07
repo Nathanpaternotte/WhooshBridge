@@ -4,11 +4,11 @@ from pathlib import Path
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-ROOT_FILES = {'AGENTS.md', 'LICENSE', 'README.md', 'README.fr.md',
+ROOT_FILES = {'AGENTS.md', 'CHANGELOG.md', 'LICENSE', 'README.md', 'README.fr.md',
               'THIRD_PARTY_NOTICES.md', '.gitignore'}
 TREES = {'.github', 'desktop/src', 'desktop/bridge', 'desktop/assets',
-         'desktop/locales', 'desktop/scripts', 'desktop/tests', 'docs', 'scripts'}
-APP_FILES = {'desktop/Cargo.toml', 'desktop/Cargo.lock', 'desktop/README.md',
+         'desktop/native', 'updates', 'desktop/locales', 'desktop/scripts', 'desktop/tests', 'docs', 'scripts'}
+APP_FILES = {'desktop/update-config.json', 'desktop/Cargo.toml', 'desktop/Cargo.lock', 'desktop/README.md',
              'desktop/requirements-runtime.txt', 'desktop/requirements-build.txt',
              'desktop/requirements-test.txt'}
 BLOCKED_PARTS = {'.git', '__pycache__', '.pytest_cache', 'target', 'venv', 'dist'}

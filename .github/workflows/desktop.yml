@@ -33,3 +33,5 @@ jobs:
         run: python desktop/tests/check_fit_identity.py
       - name: Web helper tests
         run: node --test desktop/tests/*.test.cjs
+      - name: Native updater lifecycle
+        run: bash desktop/scripts/test-updater.sh

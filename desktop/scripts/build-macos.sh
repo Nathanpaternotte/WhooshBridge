@@ -14,6 +14,7 @@ if [ ! -x "$BUILD_PYTHON" ]; then BUILD_PYTHON=python3; fi
 "$BUILD_PYTHON" -m venv .build-venv312
 .build-venv312/bin/python -m pip install -r requirements-build.txt
 export PYINSTALLER_CONFIG_DIR="$DESKTOP_DIR/target/pyinstaller-cache"
+SPARKLE_DIR="$("$BUILD_PYTHON" scripts/fetch-sparkle.py)"
 cargo build --release --locked --bins
 .build-venv312/bin/python -m PyInstaller --noconfirm --clean --onedir \
   --name garmin-bridge --distpath target/sidecar --workpath target/pyinstaller \
@@ -47,6 +48,15 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
 <key>NSPrincipalClass</key><string>NSApplication</string>
 </dict></plist>
 PLIST
+"$BUILD_PYTHON" scripts/configure-updates.py "$APP" "$(uname -m)"
+mkdir -p "$APP/Contents/Frameworks"
+ditto "$SPARKLE_DIR/Sparkle.framework" "$APP/Contents/Frameworks/Sparkle.framework"
+xcrun clang -dynamiclib -fobjc-arc -fblocks -mmacosx-version-min=14.0 \
+  -Wall -Wextra -Werror -Wno-unused-parameter \
+  -F "$SPARKLE_DIR" -framework Cocoa -framework Sparkle \
+  -Wl,-rpath,@loader_path -install_name @rpath/libWhooshUpdater.dylib \
+  native/updater.m -o "$APP/Contents/Frameworks/libWhooshUpdater.dylib"
+cp "$SPARKLE_DIR/LICENSE" "$APP/Contents/Resources/Sparkle-LICENSE.txt"
 .build-venv312/bin/python scripts/collect-licenses.py "$APP/Contents/Resources/licenses"
 codesign --force --deep --sign - "$APP"
 echo "Application created: $DESKTOP_DIR/$APP"
