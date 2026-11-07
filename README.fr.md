@@ -18,7 +18,27 @@ Application macOS permettant de choisir ses sorties MyWhoosh, de préparer leurs
 - Distinction entre import confirmé, doublon et fichier reçu en attente de traitement.
 - Interface en **français et anglais**, sélectionnable dans le menu **•••**.
 
-**L’import et l’affichage d’un appareil Garmin ne garantissent pas le calcul du Training Effect, de la charge, du statut d’entraînement ou de la VO₂max.** L’application n’invente pas ces valeurs. La version logicielle inscrite dans le FIT est une métadonnée déclarée, pas une lecture du firmware installé sur votre compteur.
+## Avant / après : MyWhoosh → Garmin Connect
+
+### Avant — la sortie dans MyWhoosh
+
+La page de l’activité MyWhoosh présente la puissance, la fréquence cardiaque, la cadence et le profil du parcours enregistrés pendant la sortie.
+
+![Avant le transfert : graphiques de l’activité dans MyWhoosh](docs/mywhoosh-interface.png)
+
+### Après — l’Edge choisi apparaît dans Garmin Connect
+
+Après le transfert avec Whoosh Bridge, Garmin Connect affiche l’activité avec l’appareil Garmin sélectionné. Dans cet exemple, l’**Edge 1050** apparaît à droite de la page, à côté de la carte et des graphiques de la sortie.
+
+![Après le transfert : page de l’activité Garmin Connect avec l’Edge 1050 sélectionné visible à droite](docs/garmin-connect.png)
+
+### Training Effect — un résultat observé
+
+La capture Garmin Connect fournie montre un **Training Effect aérobie de 2,4**, un **Training Effect anaérobie de 0,0** et une **charge d’exercice de 38**, avec **Base (aérobie faible)** comme bénéfice principal.
+
+<img src="docs/training-effect.png" width="520" alt="Training Effect Garmin Connect : Base (aérobie faible), 2,4 aérobie, 0,0 anaérobie et charge d’exercice de 38">
+
+**Il s’agit d’un résultat observé, pas d’une garantie pour chaque import.** L’import et l’affichage d’un appareil Garmin ne garantissent pas le calcul du Training Effect, de la charge, du statut d’entraînement ou de la VO₂max. L’application n’invente pas ces valeurs ; leur disponibilité dépend du traitement Garmin et des données de l’activité. La version logicielle inscrite dans le FIT est une métadonnée déclarée, pas une lecture du firmware installé sur votre compteur.
 
 ## Avertissement sur le développement
 

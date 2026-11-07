@@ -18,7 +18,27 @@ A macOS app that lets you select MyWhoosh cycling activities, prepare their FIT 
 - Distinguish confirmed imports, duplicate activities, and files received by Garmin but still awaiting processing.
 - Switch between **English and French** in the **•••** menu. The language choice is remembered.
 
-**Importing a FIT and displaying a Garmin device does not guarantee Training Effect, training load, training status or VO₂max calculation.** The app does not invent these metrics. Their availability depends on Garmin’s processing and the activity’s data.
+## Before and after: MyWhoosh → Garmin Connect
+
+### Before — the ride in MyWhoosh
+
+The MyWhoosh activity page shows the ride’s recorded power, heart rate, cadence and route profile.
+
+![Before transfer: activity charts in MyWhoosh](docs/mywhoosh-interface.png)
+
+### After — the selected Edge appears in Garmin Connect
+
+After transfer with Whoosh Bridge, Garmin Connect displays the activity with the selected Garmin device. In this example, the **Edge 1050** appears on the right of the activity page, alongside the map and recorded charts.
+
+![After transfer: Garmin Connect activity page showing the selected Edge 1050 on the right](docs/garmin-connect.png)
+
+### Training Effect — an observed result
+
+The supplied Garmin Connect capture shows **2.4 aerobic Training Effect**, **0.0 anaerobic Training Effect** and an **exercise load of 38**, with **Base (Low Aerobic)** as the primary benefit.
+
+<img src="docs/training-effect.png" width="520" alt="Garmin Connect Training Effect: Base (Low Aerobic), 2.4 aerobic, 0.0 anaerobic and exercise load 38">
+
+**This is an observed result, not a guarantee for every import.** Importing a FIT and displaying a Garmin device does not guarantee Training Effect, training load, training status or VO₂max calculation. The app does not invent these metrics. Their availability depends on Garmin’s processing and the activity’s data.
 
 ## Development disclaimer
 
@@ -117,7 +137,7 @@ desktop/          Self-contained app project
   scripts/        macOS build, icon generation and license collection
   tests/          Offline protocol, web helper and independent FIT checks
   requirements-*  Separate runtime, test and packaging dependencies
-docs/             Synthetic interface screenshots
+docs/             App screenshots and MyWhoosh/Garmin Connect examples
 scripts/          Verification and distributable archive commands
 ```
 
