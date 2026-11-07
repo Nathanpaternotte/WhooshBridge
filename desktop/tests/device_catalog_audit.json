@@ -1,0 +1,184 @@
+{
+  "source": "https://github.com/garmin/fit-python-sdk/blob/main/garmin_fit_sdk/profile.py",
+  "profile_version": {
+    "major": 21,
+    "minor": 221,
+    "patch": 0,
+    "type": "Release"
+  },
+  "verified": "2026-11-06",
+  "devices": [
+    {
+      "name": "Edge 840",
+      "product": 4062,
+      "official_symbol": "edge_840"
+    },
+    {
+      "name": "Edge 540",
+      "product": 4061,
+      "official_symbol": "edge_540"
+    },
+    {
+      "name": "Edge 1040",
+      "product": 3843,
+      "official_symbol": "edge_1040"
+    },
+    {
+      "name": "Edge 1050",
+      "product": 4440,
+      "official_symbol": "edge_1050"
+    },
+    {
+      "name": "Edge 550",
+      "product": 4633,
+      "official_symbol": "edge_550"
+    },
+    {
+      "name": "Edge 850",
+      "product": 4634,
+      "official_symbol": "edge_850"
+    },
+    {
+      "name": "Edge 530",
+      "product": 3121,
+      "official_symbol": "edge_530"
+    },
+    {
+      "name": "Edge 830",
+      "product": 3122,
+      "official_symbol": "edge_830"
+    },
+    {
+      "name": "Edge 1030",
+      "product": 2713,
+      "official_symbol": "edge_1030"
+    },
+    {
+      "name": "Edge 1030 Plus",
+      "product": 3570,
+      "official_symbol": "edge_1030_plus"
+    },
+    {
+      "name": "Edge 130 Plus",
+      "product": 3558,
+      "official_symbol": "edge_130_plus"
+    },
+    {
+      "name": "Edge Explore 2",
+      "product": 4169,
+      "official_symbol": "edge_explore2"
+    },
+    {
+      "name": "Forerunner 255",
+      "product": 3992,
+      "official_symbol": "fr255"
+    },
+    {
+      "name": "Forerunner 265",
+      "product": 4257,
+      "official_symbol": "fr265_large"
+    },
+    {
+      "name": "Forerunner 955",
+      "product": 4024,
+      "official_symbol": "fr955"
+    },
+    {
+      "name": "Forerunner 965",
+      "product": 4315,
+      "official_symbol": "fr965"
+    },
+    {
+      "name": "Forerunner 970",
+      "product": 4565,
+      "official_symbol": "fr970"
+    },
+    {
+      "name": "fēnix 7",
+      "product": 3906,
+      "official_symbol": "fenix7"
+    },
+    {
+      "name": "fēnix 7 Pro Solar",
+      "product": 4375,
+      "official_symbol": "fenix7_pro_solar"
+    },
+    {
+      "name": "fēnix 8",
+      "product": 4536,
+      "official_symbol": "fenix8"
+    },
+    {
+      "name": "epix Gen 2",
+      "product": 3943,
+      "official_symbol": "epix_gen2"
+    },
+    {
+      "name": "Enduro 2",
+      "product": 4341,
+      "official_symbol": "enduro2"
+    }
+  ],
+  "edge_firmware": [
+    {
+      "product": 4062,
+      "software_raw": 3133,
+      "source": "https://forums.garmin.com/sports-fitness/cycling/f/edge-840-series/439458/edge-840-series-sw-31-33"
+    },
+    {
+      "product": 4061,
+      "software_raw": 3133,
+      "source": "https://forums.garmin.com/sports-fitness/cycling/f/edge-540-series/439456/edge-540-series-sw-31-33"
+    },
+    {
+      "product": 3843,
+      "software_raw": 3133,
+      "source": "https://forums.garmin.com/sports-fitness/cycling/f/edge-1040-series/439455/edge-1040-series-sw-31-33"
+    },
+    {
+      "product": 4440,
+      "software_raw": 3133,
+      "source": "https://forums.garmin.com/sports-fitness/cycling/f/edge-1050/439457/edge-1050-series-sw-31-33"
+    },
+    {
+      "product": 4633,
+      "software_raw": 3220,
+      "source": "https://forums.garmin.com/sports-fitness/cycling/f/edge-550/442201/edge-550-sw-32-20"
+    },
+    {
+      "product": 4634,
+      "software_raw": 3220,
+      "source": "https://forums.garmin.com/sports-fitness/cycling/f/edge-850/442203/edge-850-sw-32-20"
+    },
+    {
+      "product": 3121,
+      "software_raw": 975,
+      "source": "https://forums.garmin.com/sports-fitness/cycling/f/edge-530/328079/new-edge-530-version-9-75-now-available"
+    },
+    {
+      "product": 3122,
+      "software_raw": 975,
+      "source": "https://forums.garmin.com/sports-fitness/cycling/f/edge-830/328080/new-edge-830-version-9-75-now-available"
+    },
+    {
+      "product": 2713,
+      "software_raw": 1375,
+      "source": "https://forums.garmin.com/sports-fitness/sports-fitness/f/edge-1030/328081/new-edge-1030-and-edge-1030-bontrager-version-13-75-now-available"
+    },
+    {
+      "product": 3570,
+      "software_raw": 675,
+      "source": "https://forums.garmin.com/sports-fitness/cycling/f/edge-1030-plus/328082/new-edge-1030-plus-version-6-75-now-available"
+    },
+    {
+      "product": 3558,
+      "software_raw": 300,
+      "source": "https://forums.garmin.com/sports-fitness/cycling/f/edge-130-plus/321325/new-edge-130-plus-version-3-00-now-available"
+    },
+    {
+      "product": 4169,
+      "software_raw": 3023,
+      "source": "https://forums.garmin.com/sports-fitness/cycling/f/edge-explore-2/436288/edge-explore-2-version-30-23---live"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+# Secrets and personal activity data
+.env
+.env.*
+*.fit
+*.FIT
+*.tcx
+*.TCX
+*.dms
+*.pem
+*.key
+*.p12
+*.mobileprovision
+*.log
+
+# Local environments and caches
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage*
+htmlcov/
+coverage.xml
+test-results.xml
+
+# Build and distribution outputs
+/desktop/target/
+/desktop/.build-venv*/
+/desktop/*.spec
+/dist/
+*.app/
+*.dmg
+*.zip
+*.tar.gz
+
+# Editors and operating system
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.tmp
+*.bak
+*~
