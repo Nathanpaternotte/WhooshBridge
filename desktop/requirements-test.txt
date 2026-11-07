@@ -1,2 +1,2 @@
 -r requirements-runtime.txt
-fit-tool==0.9.15
+fit-tool==0.9.17
