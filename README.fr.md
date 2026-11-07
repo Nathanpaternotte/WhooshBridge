@@ -5,6 +5,8 @@
 
 Application macOS permettant de choisir ses sorties MyWhoosh, de préparer leurs fichiers FIT avec une identité Garmin Edge cohérente, puis de les transférer vers Garmin Connect.
 
+**Faites compter vos kilomètres MyWhoosh dans les défis de distance Garmin Connect.** Les fichiers FIT préparés par Whoosh Bridge peuvent contribuer aux défis de distance à vélo lorsque Garmin reconnaît l’activité importée comme éligible. Vérifiez votre progression après l’import : la prise en compte dépend des règles du défi et du traitement Garmin, et n’est pas garantie pour tous les défis ou badges.
+
 ![Interface française](docs/interface-fr.png)
 
 ## Fonctionnalités

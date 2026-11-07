@@ -5,6 +5,8 @@
 
 A macOS app that lets you select MyWhoosh cycling activities, prepare their FIT files with a consistent Garmin Edge identity, and upload them to Garmin Connect.
 
+**Make your MyWhoosh kilometres count toward Garmin Connect distance challenges.** FIT files prepared by Whoosh Bridge can contribute to cycling distance challenges when Garmin accepts the imported activity as eligible. Check your challenge progress after import: eligibility depends on the challenge’s rules and Garmin’s processing, and is not guaranteed for every challenge or badge.
+
 ![Whoosh Bridge in English](docs/interface-en.png)
 
 ## What it does
