@@ -128,6 +128,8 @@ becomes available once the signed feed and its Release archive are published.
 
 ## Privacy and storage
 
+At startup, the app asks whether you accept or decline optional usage counting if no choice has been recorded. Both choices are remembered, and nothing is sent before acceptance. You can change your choice under **••• → Participate in active installation counts**. When enabled, the app sends `app_active` to PostHog EU at most once per UTC day while running, with a random installation identifier and the app version. No account, Unit ID or activity data is included; person profiles and location enrichment are disabled. PostHog necessarily receives the network IP during transport. The identifier and last attempted day are stored privately in `~/Library/Application Support/Whoosh Bridge/telemetry.json`. Disabling stops future requests; an in-flight request may finish. This counts participating installations, not all users.
+
 **Whoosh Bridge does not collect your login credentials or send them to its developer or an intermediary server.** Saved Garmin session tokens and optional MyWhoosh credentials are stored locally in your Mac’s Keychain. Credentials and session tokens are used to authenticate directly with Garmin and MyWhoosh: they are necessarily transmitted to the relevant service when signing in or making authenticated requests.
 
 - Your Garmin password is not saved by the app; only session tokens are retained in Keychain.

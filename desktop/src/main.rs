@@ -7,6 +7,7 @@ mod garmin;
 mod i18n;
 mod mywhoosh;
 mod session_store;
+mod telemetry;
 mod unit_help;
 mod updater;
 mod web_session;
@@ -30,6 +31,7 @@ struct Credentials {
 struct App {
     worker: Worker,
     updater: Option<updater::Updater>,
+    telemetry: Option<telemetry::Telemetry>,
     icon: egui::TextureHandle,
     garmin: Credentials,
     whoosh: Credentials,
@@ -45,6 +47,7 @@ struct App {
     device_product: u16,
     device_preferences: session_store::DevicePreferences,
     device_store_ready: bool,
+    consent_save_failed: bool,
     unit_changed: Option<std::time::Instant>,
     search: String,
     page: usize,
@@ -77,6 +80,11 @@ impl App {
         let mut app = Self {
             icon,
             worker,
+            telemetry: if preview {
+                None
+            } else {
+                Some(telemetry::Telemetry::start())
+            },
             updater: if preview {
                 None
             } else {
@@ -96,6 +104,7 @@ impl App {
             device_product: 4440,
             device_preferences: Default::default(),
             device_store_ready: false,
+            consent_save_failed: false,
             unit_changed: None,
             search: String::new(),
             page: 1,
@@ -172,6 +181,24 @@ impl App {
         }
         app
     }
+    fn set_telemetry_consent(&mut self, enabled: bool) {
+        let mut preferences = self.device_preferences.clone();
+        preferences.telemetry_enabled = enabled;
+        preferences.telemetry_decision = Some(enabled);
+        match session_store::save_devices(&preferences) {
+            Ok(()) => {
+                self.device_preferences = preferences;
+                self.consent_save_failed = false;
+                if let Some(telemetry) = &self.telemetry {
+                    telemetry.set_enabled(enabled);
+                }
+            }
+            Err(error) => {
+                self.consent_save_failed = true;
+                self.error = Some(error.to_string());
+            }
+        }
+    }
     fn save_device_preferences(&mut self) {
         self.unit_changed = None;
         if !self.device_store_ready {
@@ -238,6 +265,9 @@ impl App {
                         .get(&preferences.selected)
                         .map(u32::to_string)
                         .unwrap_or_default();
+                    if let Some(telemetry) = &self.telemetry {
+                        telemetry.set_enabled(preferences.telemetry_consent() == Some(true));
+                    }
                     self.device_preferences = preferences;
                     self.device_store_ready = true;
                 }
@@ -746,6 +776,14 @@ impl eframe::App for App {
                                 );
                             }
                             ui.separator();
+                            let mut enabled = self.device_preferences.telemetry_consent() == Some(true);
+                            if ui.add_enabled(self.device_store_ready && self.telemetry.is_some(),
+                                egui::Checkbox::new(&mut enabled, t("Participer au comptage des installations actives")))
+                                .on_hover_text(t("PostHog EU reçoit un identifiant aléatoire et la version de l’app, au maximum une fois par jour. Aucune donnée de compte ou d’activité."))
+                                .changed() {
+                                self.set_telemetry_consent(enabled);
+                            }
+                            ui.separator();
                             ui.collapsing(t("À propos"), |ui| {
                                 ui.label(format!("Whoosh Bridge {}", env!("CARGO_PKG_VERSION")));
                                 ui.label(t(
@@ -844,7 +882,31 @@ impl eframe::App for App {
                         if self.busy {
                             if ui.button(t("Annuler")).clicked() {
                                 self.worker.cancel.store(true, Ordering::Relaxed);
-                                if self.mfa_open {
+                                if self.device_store_ready && self.telemetry.is_some()
+            && self.device_preferences.telemetry_consent().is_none()
+            && !self.mfa_open && !self.confirm {
+            egui::Modal::new(egui::Id::new("telemetry-consent"))
+                .frame(design::surface())
+                .show(ctx, |ui| {
+                    ui.set_width(390.0);
+                    ui.heading(t("Participer au comptage des installations ?"));
+                    ui.add_space(8.0);
+                    ui.label(t("Avec votre accord, Whoosh Bridge envoie à PostHog EU un identifiant aléatoire propre à cette installation et la version de l’app, au maximum une fois par jour d’utilisation."));
+                    ui.add_space(8.0);
+                    ui.label(t("Aucune donnée de compte Garmin ou MyWhoosh, aucun identifiant d’unité ni aucune donnée sportive ne sont envoyés."));
+                    ui.add_space(8.0);
+                    ui.label(t("Votre choix sera mémorisé. Vous pourrez le modifier dans le menu •••. Refuser ne limite aucune fonctionnalité."));
+                    if self.consent_save_failed {
+                        ui.colored_label(egui::Color32::RED, t("Impossible d’enregistrer votre choix. Veuillez réessayer."));
+                    }
+                    ui.add_space(12.0);
+                    ui.horizontal(|ui| {
+                        if ui.button(t("Refuser")).clicked() { self.set_telemetry_consent(false); }
+                        if ui.button(t("Accepter")).clicked() { self.set_telemetry_consent(true); }
+                    });
+                });
+        }
+        if self.mfa_open {
                                     let _ = self.worker.mfa.send(None);
                                     self.mfa_open = false;
                                 }
@@ -925,6 +987,33 @@ impl eframe::App for App {
                     });
                 });
             });
+        if self.device_store_ready
+            && self.telemetry.is_some()
+            && self.device_preferences.telemetry_consent().is_none()
+            && !self.mfa_open
+            && !self.confirm
+        {
+            egui::Modal::new(egui::Id::new("telemetry-consent"))
+                .frame(design::surface())
+                .show(ctx, |ui| {
+                    ui.set_width(390.0);
+                    ui.heading(t("Participer au comptage des installations ?"));
+                    ui.add_space(8.0);
+                    ui.label(t("Avec votre accord, Whoosh Bridge envoie à PostHog EU un identifiant aléatoire propre à cette installation et la version de l’app, au maximum une fois par jour d’utilisation."));
+                    ui.add_space(8.0);
+                    ui.label(t("Aucune donnée de compte Garmin ou MyWhoosh, aucun identifiant d’unité ni aucune donnée sportive ne sont envoyés."));
+                    ui.add_space(8.0);
+                    ui.label(t("Votre choix sera mémorisé. Vous pourrez le modifier dans le menu •••. Refuser ne limite aucune fonctionnalité."));
+                    if self.consent_save_failed {
+                        ui.colored_label(egui::Color32::RED, t("Impossible d’enregistrer votre choix. Veuillez réessayer."));
+                    }
+                    ui.add_space(12.0);
+                    ui.horizontal(|ui| {
+                        if ui.button(t("Refuser")).clicked() { self.set_telemetry_consent(false); }
+                        if ui.button(t("Accepter")).clicked() { self.set_telemetry_consent(true); }
+                    });
+                });
+        }
         if self.mfa_open {
             egui::Modal::new(egui::Id::new("garmin-mfa"))
                 .frame(design::surface())

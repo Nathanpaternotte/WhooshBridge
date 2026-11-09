@@ -121,3 +121,29 @@ failure during migration prevents overwriting preferences. Account logout preser
 
 Never add real FIT files, logs, cookies, token stores, `.env`, Keychain dumps or
 account screenshots to the repository. Use synthetic fixtures and preview mode.
+
+## PostHog installation counts
+
+`src/telemetry.rs` uses the existing reqwest dependency and the public EU project
+ingestion token; no SDK or private API credential is bundled. A startup modal asks for consent until `telemetry_decision` is recorded as true
+or false in device preferences. No telemetry runs before acceptance. The menu
+can change either choice. Legacy `telemetry_enabled: true` is treated as accepted;
+legacy false or absent values prompt once because they did not distinguish a
+refusal from the default. Persistence failures keep the prompt open. Preview
+mode never starts telemetry. A dedicated thread checks once per minute, including
+across UTC midnight. The private atomic telemetry file stores a random 128-bit
+installation ID and last attempted UTC day. A failed request is not retried that
+day; invalid local state disables sending without overwriting it. Requests have
+a five-second timeout and do not follow redirects. No service responses are logged.
+
+In PostHog EU, create a Trends insight for `app_active`, aggregation **Unique users**,
+date range **Last 30 days**, display **Number**, and save it as **Active installations
+— 30 days**. Count unique identifiers across the entire period, not the sum of daily
+unique counts. A second daily line chart can show the trend; `app_version` provides
+a version breakdown. Under Project settings, keep IP data capture disabled.
+The public ingestion token can send events but cannot create dashboards or read
+results; these require a signed-in PostHog session or a separately authorized API.
+
+Only consenting installations of this build or later can appear. Offline use,
+failed requests, and opt-outs reduce counts; deleting the local telemetry file
+creates a new identity. HTTP acceptance alone is not proof of dashboard ingestion.

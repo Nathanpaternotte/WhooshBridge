@@ -181,5 +181,14 @@
   "Installation de la mise à jour…": "Installing the update…",
   "Rechercher des mises à jour…": "Check for updates…",
   "Vérifier automatiquement les mises à jour": "Automatically check for updates",
-  "Mises à jour disponibles dans l’app installée": "Updates available in the installed app"
+  "Mises à jour disponibles dans l’app installée": "Updates available in the installed app",
+  "Participer au comptage des installations actives": "Participate in active installation counts",
+  "PostHog EU reçoit un identifiant aléatoire et la version de l’app, au maximum une fois par jour. Aucune donnée de compte ou d’activité.": "PostHog EU receives a random identifier and the app version, at most once a day. No account or activity data.",
+  "Participer au comptage des installations ?": "Participate in installation counts?",
+  "Avec votre accord, Whoosh Bridge envoie à PostHog EU un identifiant aléatoire propre à cette installation et la version de l’app, au maximum une fois par jour d’utilisation.": "With your permission, Whoosh Bridge sends PostHog EU a random identifier for this installation and the app version, at most once per day of use.",
+  "Aucune donnée de compte Garmin ou MyWhoosh, aucun identifiant d’unité ni aucune donnée sportive ne sont envoyés.": "No Garmin or MyWhoosh account data, Unit ID or activity data is sent.",
+  "Votre choix sera mémorisé. Vous pourrez le modifier dans le menu •••. Refuser ne limite aucune fonctionnalité.": "Your choice will be remembered. You can change it in the ••• menu. Declining does not restrict any features.",
+  "Impossible d’enregistrer votre choix. Veuillez réessayer.": "Your choice could not be saved. Please try again.",
+  "Refuser": "Decline",
+  "Accepter": "Accept"
 }

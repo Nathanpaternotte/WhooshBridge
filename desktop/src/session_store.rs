@@ -57,6 +57,10 @@ pub fn clear_whoosh() -> Result<()> {
 const DEVICES_ACCOUNT: &str = "garmin.device_preferences";
 #[derive(Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct DevicePreferences {
+    #[serde(default)]
+    pub telemetry_enabled: bool,
+    #[serde(default)]
+    pub telemetry_decision: Option<bool>,
     pub selected: u16,
     #[serde(default)]
     pub language: Option<bool>,
@@ -65,10 +69,20 @@ pub struct DevicePreferences {
 impl Default for DevicePreferences {
     fn default() -> Self {
         Self {
+            telemetry_enabled: false,
+            telemetry_decision: None,
             selected: 4440,
             language: None,
             units: Default::default(),
         }
+    }
+}
+impl DevicePreferences {
+    pub fn telemetry_consent(&self) -> Option<bool> {
+        // Older builds only recorded a bool: true proves acceptance, false does
+        // not distinguish refusal from the default. Ask once in that case.
+        self.telemetry_decision
+            .or(self.telemetry_enabled.then_some(true))
     }
 }
 fn load_legacy_devices() -> Result<DevicePreferences> {
@@ -147,6 +161,40 @@ pub fn save_devices(value: &DevicePreferences) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn telemetry_choice_survives_restart_and_migrates_old_preferences() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("preferences.json");
+        for (old, expected) in [
+            ("", None),
+            (", \"telemetry_enabled\": false", None),
+            (", \"telemetry_enabled\": true", Some(true)),
+        ] {
+            std::fs::write(&path, format!("{{\"selected\":4440,\"units\":{{}}{old}}}")).unwrap();
+            assert_eq!(
+                read_preferences(&path)
+                    .unwrap()
+                    .unwrap()
+                    .telemetry_consent(),
+                expected
+            );
+        }
+        for decision in [false, true] {
+            let value = DevicePreferences {
+                telemetry_decision: Some(decision),
+                telemetry_enabled: decision,
+                ..Default::default()
+            };
+            write_preferences(&path, &value).unwrap();
+            assert_eq!(
+                read_preferences(&path)
+                    .unwrap()
+                    .unwrap()
+                    .telemetry_consent(),
+                Some(decision)
+            );
+        }
+    }
     #[test]
     fn local_preferences_roundtrip_and_validate_without_keychain() {
         use std::os::unix::fs::PermissionsExt;

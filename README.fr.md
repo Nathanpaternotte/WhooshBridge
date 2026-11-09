@@ -110,6 +110,8 @@ disponible une fois le flux signé et son archive de release publiés.
 
 ## Données enregistrées
 
+Au lancement, l’app propose d’accepter ou de refuser le comptage facultatif si aucun choix n’a été enregistré. Les deux réponses sont mémorisées et aucun envoi n’a lieu avant acceptation. Le choix reste modifiable dans **••• → Participer au comptage des installations actives**. Une fois activé, l’app envoie `app_active` à PostHog EU au maximum une fois par jour UTC pendant son utilisation, avec un identifiant aléatoire d’installation et sa version. Aucun compte, Unit ID ou donnée sportive ne sont inclus ; les profils de personnes et l’enrichissement géographique sont désactivés. PostHog reçoit nécessairement l’adresse IP réseau lors du transport. L’identifiant et le dernier jour de tentative sont conservés dans le fichier privé `~/Library/Application Support/Whoosh Bridge/telemetry.json`. La désactivation arrête les prochains envois ; une requête déjà en cours peut se terminer. Le compteur mesure uniquement les installations participantes.
+
 **Whoosh Bridge ne collecte pas vos identifiants de connexion et ne les envoie ni à son développeur ni à un serveur intermédiaire.** Les jetons de session Garmin et les identifiants MyWhoosh optionnels sont enregistrés localement dans le trousseau de votre Mac (Keychain). Les identifiants et jetons servent à vous authentifier directement auprès de Garmin et MyWhoosh : ils sont nécessairement transmis au service concerné lors de la connexion ou des requêtes authentifiées.
 
 Votre mot de passe Garmin n’est pas enregistré par l’application ; seuls les jetons de session sont conservés dans le trousseau.
