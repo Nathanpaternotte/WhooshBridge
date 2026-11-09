@@ -25,8 +25,8 @@ English/French setting.
 3. Generate the signed feed, specifying the exact future GitHub Release tag:
 
    ```bash
-   python3.12 scripts/prepare-update.py --tag v0.1.0-alpha.3 \
-     --archive dist/Whoosh-Bridge-0.1.0-alpha.3-macos-arm64.zip
+   python3.12 scripts/prepare-update.py --tag v0.1.0-alpha.4 \
+     --archive dist/Whoosh-Bridge-0.1.0-alpha.4-macos-arm64.zip
    ```
 
    The signing tools use the Keychain account `com.mywhooshbridge.updates`.

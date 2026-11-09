@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.1.0-alpha.4
+
+### Added
+
+- Optional active installation counting through PostHog EU.
+- A startup consent dialog with equally accessible Accept and Decline actions. Both choices are remembered and can be changed from the app menu.
+- French and English consent text and settings.
+
+### Privacy
+
+- No telemetry is sent before acceptance. Events contain a random installation identifier and the app version, with at most one attempt per UTC day.
+- No Garmin or MyWhoosh account data, Unit IDs or activity data is included. Person profiles and geographic enrichment are disabled.
+- Telemetry runs in a background thread with a short timeout and private local state.
+
+### Validation
+
+- Local Rust, Python, JavaScript and FIT checks passed, including consent persistence, legacy preference migration, daily event limits and telemetry payload tests.
+- A synthetic integration event was accepted by the PostHog EU endpoint (HTTP 200); dashboard ingestion was not independently verified.
+- GitHub CI and delivery of this release through the public update feed remain to be verified.
+
+### Installation notes
+
+- Version 0.1.0-alpha.4 uses Sparkle build 4. Existing Sparkle-enabled installations can discover it after the exact release ZIP and signed appcast are published.
+- This Apple Silicon build remains ad-hoc signed and is not Apple-notarized.
+
 ## 0.1.0-alpha.3
 
 ### Added
