@@ -35,3 +35,7 @@ jobs:
         run: node --test desktop/tests/*.test.cjs
       - name: Native updater lifecycle
         run: bash desktop/scripts/test-updater.sh
+      - name: SwiftUI compilation
+        run: bash desktop/scripts/build-swiftui.sh
+      - name: SwiftUI model tests
+        run: bash desktop/scripts/test-swiftui.sh

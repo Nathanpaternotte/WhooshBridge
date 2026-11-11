@@ -190,5 +190,10 @@
   "Votre choix sera mémorisé. Vous pourrez le modifier dans le menu •••. Refuser ne limite aucune fonctionnalité.": "Your choice will be remembered. You can change it in the ••• menu. Declining does not restrict any features.",
   "Impossible d’enregistrer votre choix. Veuillez réessayer.": "Your choice could not be saved. Please try again.",
   "Refuser": "Decline",
-  "Accepter": "Accept"
+  "Accepter": "Accept",
+  "Sélection ou identifiant d’unité invalide.": "Invalid selection or device Unit ID.",
+  "Sélection invalide.": "Invalid selection.",
+  "Actualisez vos sorties avant de les transférer.": "Refresh your rides before transferring them.",
+  "Commande invalide.": "Invalid command.",
+  "Commande invalide. Les réglages n’ont pas été modifiés.": "Invalid command. Your settings have not been changed."
 }

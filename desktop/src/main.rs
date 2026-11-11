@@ -1,17 +1,8 @@
 use crate::i18n::t;
+use whoosh_bridge::{devices, diagnostics, i18n, mywhoosh, session_store, telemetry, worker};
 mod design;
-mod devices;
-mod diagnostics;
-mod fit;
-mod garmin;
-mod i18n;
-mod mywhoosh;
-mod session_store;
-mod telemetry;
 mod unit_help;
 mod updater;
-mod web_session;
-mod worker;
 
 use eframe::egui::{self, Color32, RichText};
 use mywhoosh::Activity;
@@ -63,7 +54,8 @@ struct App {
 impl App {
     fn new(cc: &eframe::CreationContext<'_>) -> Self {
         design::install(&cc.egui_ctx);
-        let worker = Worker::new(cc.egui_ctx.clone());
+        let ctx = cc.egui_ctx.clone();
+        let worker = Worker::new(move || ctx.request_repaint());
         let preview = cfg!(debug_assertions) && std::env::var_os("WHOOSH_UI_PREVIEW").is_some();
         if !preview {
             let _ = worker.commands.send(Command::Restore(true));

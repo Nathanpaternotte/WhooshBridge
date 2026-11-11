@@ -33,6 +33,7 @@ pub enum Command {
     Page(usize),
     Sync(Vec<Activity>, u16, Option<u32>),
     Disconnect,
+    SavePreferences(crate::session_store::DevicePreferences),
 }
 pub enum Event {
     Preferences(crate::session_store::DevicePreferences),
@@ -53,7 +54,7 @@ pub struct Worker {
     pub cancel: Arc<AtomicBool>,
 }
 impl Worker {
-    pub fn new(ctx: eframe::egui::Context) -> Self {
+    pub fn new(wake: impl Fn() + Send + 'static) -> Self {
         let (commands, requests) = mpsc::channel();
         let (send, events) = mpsc::channel();
         let (mfa, codes) = mpsc::channel::<Option<String>>();
@@ -62,7 +63,7 @@ impl Worker {
         std::thread::spawn(move || {
             let emit = |e| {
                 let _ = send.send(e);
-                ctx.request_repaint();
+                wake();
             };
             let mut whoosh = None;
             let mut garmin = None;
@@ -197,17 +198,21 @@ impl Worker {
                                 ));
                             }
                         }
+                        Command::SavePreferences(value) => {
+                            crate::session_store::save_devices(&value)?;
+                            emit(Event::Preferences(value));
+                        }
                         Command::Disconnect => {
                             whoosh = None;
                             garmin = None;
+                            emit(Event::AuthRequired("garmin"));
+                            emit(Event::AuthRequired("mywhoosh"));
                             let keychain = crate::session_store::clear();
                             let browser = crate::web_session::WebSession::clear();
                             let credentials = crate::session_store::clear_whoosh();
                             credentials?;
                             keychain?;
                             browser?;
-                            emit(Event::AuthRequired("garmin"));
-                            emit(Event::AuthRequired("mywhoosh"));
                         }
                     }
                     Ok(())

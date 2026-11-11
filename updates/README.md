@@ -5,7 +5,7 @@ Whoosh Bridge uses Sparkle 2, with separate `appcast-arm64.xml` and
 and testing its archive. A source ZIP is never an application update.
 
 The app checks daily by default. Users can disable checks or check manually in
-**•••**. Installation requires the user's action in Sparkle's window. Relaunch
+**Whoosh Bridge → Check for Updates…**. Installation requires the user's action in Sparkle's window. Relaunch
 is deferred while a Whoosh Bridge operation is in progress. Sparkle's native
 windows follow macOS language preferences; app-owned controls follow the app's
 English/French setting.
@@ -25,8 +25,8 @@ English/French setting.
 3. Generate the signed feed, specifying the exact future GitHub Release tag:
 
    ```bash
-   python3.12 scripts/prepare-update.py --tag v0.1.0-alpha.4 \
-     --archive dist/Whoosh-Bridge-0.1.0-alpha.4-macos-arm64.zip
+   python3.12 scripts/prepare-update.py --tag v1.0.0 \
+     --archive dist/Whoosh-Bridge-1.0.0-macos-arm64.zip
    ```
 
    The signing tools use the Keychain account `com.mywhooshbridge.updates`.

@@ -4,9 +4,12 @@ User documentation: [English](../README.md) · [Français](../README.fr.md).
 
 ## Architecture
 
-`main.rs` → worker thread → MyWhoosh web helper / FIT editor / Garmin sidecar.
+`native/swift/` → private JSON-lines pipes → `whoosh-engine` → worker thread → MyWhoosh web helper / FIT editor / Garmin sidecar.
 
-- `main.rs`, `design.rs`: egui interface; no account calls on the UI rendering path.
+- `native/swift/`: native SwiftUI interface, navigation, accounts, destination, transfer receipts, consent and Sparkle integration. Targets macOS 14+ and follows system light/dark appearance.
+- `src/bin/whoosh-engine.rs`, `src/lib.rs`: private engine protocol. Only activity IDs cross back from the UI; FIT download references stay in the engine. MFA and cancellation remain responsive during work. No credentials in arguments or protocol logs.
+- `main.rs`, `design.rs`: retained egui reference, not packaged as the main app.
+- `worker.rs`: shared workflow, independent of the rendering framework.
 - `i18n.rs`, `locales/en.json`: render-time translations. French is the source
   language. Initial language follows macOS; a menu override is saved in local preferences.
   Activity names, email addresses and numeric identifiers are not translated.
@@ -28,7 +31,7 @@ User documentation: [English](../README.md) · [Français](../README.fr.md).
 - `devices.rs`: Edge catalogue and declared firmware; source links and audited
   identifiers are in `tests/device_catalog_audit.json`.
 
-The app requires macOS 14+ for the persistent WebKit store. It is not 100% Rust:
+The app requires macOS 14+ for the persistent WebKit store. The UI is SwiftUI, the engine is Rust:
 the Garmin sidecar is Python, bundled in release apps. The historical Python CLI is no longer included.
 
 ## FIT behavior
@@ -96,16 +99,25 @@ Independent FIT checks decode 26 synthetic exports (13 Edge models, both byte
 orders) with fit-tool and compare identities, versions, samples, accessories and
 CRCs. Account/network operations are mocked or avoided in these tests.
 
-Synthetic UI previews (debug build only; no account restoration or transfers):
+Synthetic SwiftUI previews (separate app; no account restoration, telemetry or transfers):
 
 ```bash
-cargo build --manifest-path desktop/Cargo.toml --bins
-WHOOSH_UI_LANGUAGE=en WHOOSH_UI_PREVIEW=rides \
-  WHOOSH_UI_SCREENSHOT=/tmp/whoosh-en.png desktop/target/debug/whoosh-bridge
+bash desktop/scripts/preview-swiftui.sh
+open "desktop/target/preview/Whoosh Bridge Preview.app"
 ```
 
-Use `fr` for French, `WHOOSH_UI_SMALL=1` for the minimum window, and
-`WHOOSH_UI_PREVIEW=empty|rides|confirm|error|mfa|loading|no-rides` for preview states.
+For alternate states, run the preview executable with `WHOOSH_UI_PREVIEW=empty|rides|confirm|error|mfa|consent|loading`
+and `WHOOSH_UI_LANGUAGE=en|fr`. Preview environment variables are ignored by release builds.
+`bash desktop/scripts/test-swiftui.sh` verifies the native model against synthetic engine events.
+`bash desktop/scripts/build-swiftui.sh` compiles just the UI using the installed macOS SDK.
+The packaging script compiles the release SwiftUI executable and includes `whoosh-engine`
+and `whoosh-web-login` beside it. The egui reference remains available through
+`cargo run --manifest-path desktop/Cargo.toml --bin whoosh-bridge`.
+
+The main window cannot close or quit during an operation. Stop requests allow an
+already-started upload to settle. Receipt history lasts for the current app session;
+refreshing the ride list does not erase ambiguous receipts. There are no automatic
+upload retries. Transfer confirmation includes the selected recorder and Unit ID.
 
 ## Diagnostics and storage
 

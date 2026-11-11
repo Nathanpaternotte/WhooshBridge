@@ -4,7 +4,7 @@ Whoosh Bridge is a modified/extended version of the GPL v3 repository
 [marcelorodrigo/mywhoosh-to-garmin](https://github.com/marcelorodrigo/mywhoosh-to-garmin).
 Its historical Python CLI, services and tests have been removed; its origin and
 GPL v3 license are retained.
-The Rust desktop app, WebKit integration, Keychain persistence, metadata editor,
+The SwiftUI interface, Rust engine, WebKit integration, Keychain persistence, metadata editor,
 bilingual UI and original logo were added in November 2026.
 
 ## Reference implementations and specifications
@@ -29,7 +29,7 @@ bilingual UI and original logo were added in November 2026.
 |---|---|---|
 | [python-garminconnect](https://github.com/cyberjunky/python-garminconnect) | Garmin API wrapper, Python sidecar | MIT |
 | [garth](https://github.com/matin/garth) | Authentication and token refresh through garminconnect | MIT |
-| [egui / eframe](https://github.com/emilk/egui) | Rust desktop UI | MIT or Apache-2.0 |
+| [egui / eframe](https://github.com/emilk/egui) | Preserved reference UI (not the packaged frontend) | MIT or Apache-2.0 |
 | [Wry](https://github.com/tauri-apps/wry) | Native WebKit window | MIT or Apache-2.0 |
 | [Tao](https://github.com/tauri-apps/tao) | Web helper event loop | MIT or Apache-2.0 |
 | [rust-security-framework](https://github.com/kornelski/rust-security-framework) | macOS Keychain | MIT or Apache-2.0 |

@@ -12,3 +12,6 @@ cargo clippy --manifest-path desktop/Cargo.toml --locked --all-targets -- -D war
 "$CHECK_PYTHON" -m unittest discover -s desktop/tests -v
 "$CHECK_PYTHON" desktop/tests/check_fit_identity.py
 node --test desktop/tests/*.test.cjs
+
+bash desktop/scripts/build-swiftui.sh
+bash desktop/scripts/test-swiftui.sh

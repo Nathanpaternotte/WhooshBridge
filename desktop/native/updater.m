@@ -1,4 +1,4 @@
-// Main-thread-only adapter between egui and Sparkle's standard macOS UI.
+// Main-thread-only adapter between the desktop UI and Sparkle's standard macOS UI.
 #import <Cocoa/Cocoa.h>
 #import <Sparkle/Sparkle.h>
 

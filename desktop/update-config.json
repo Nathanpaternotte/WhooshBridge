@@ -1,7 +1,7 @@
 {
   "sparkle_version": "2.10.1",
   "sparkle_sha256": "1a856d2a9edb8e628de88121d7be04cf0e2167f8641650b78fca00b14244cf27",
-  "build_number": 4,
+  "build_number": 6,
   "repository": "aervyn96/WhooshBridge",
   "feed_base_url": "https://raw.githubusercontent.com/aervyn96/WhooshBridge/main/updates",
   "public_ed_key": "j0rWyT/5Vg4bNKnYE/l48xIjUTcMRkJKor09wsu0QXo=",

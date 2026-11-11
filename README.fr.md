@@ -3,14 +3,35 @@
 <p align="center">Vos sorties MyWhoosh. Votre appareil Garmin.</p>
 <p align="center"><a href="README.md">English</a> · Français</p>
 
-Application macOS permettant de choisir ses sorties MyWhoosh, de préparer leurs fichiers FIT avec une identité Garmin Edge cohérente, puis de les transférer vers Garmin Connect.
+**Version 1.0.0 · macOS 14+ · Apple Silicon · Par Nathan Paternotte**
+
+Application macOS native en SwiftUI permettant de choisir ses sorties MyWhoosh, de préparer leurs fichiers FIT avec une identité Garmin Edge cohérente, puis de les transférer vers Garmin Connect.
 
 **Faites compter vos kilomètres MyWhoosh dans les défis de distance Garmin Connect.** Les fichiers FIT préparés par Whoosh Bridge peuvent contribuer aux défis de distance à vélo lorsque Garmin reconnaît l’activité importée comme éligible. Vérifiez votre progression après l’import : la prise en compte dépend des règles du défi et du traitement Garmin, et n’est pas garantie pour tous les défis ou badges.
 
-![Interface française](docs/interface-fr.png)
+![Whoosh Bridge 1.0 — interface native SwiftUI en français](docs/interface-fr.png)
+
+*Aperçu avec des sorties et un Unit ID fictifs. Aucune donnée de compte n’est affichée.*
+
+## Installer la V1
+
+Téléchargez `Whoosh-Bridge-1.0.0-macos-arm64.zip` depuis la page
+[Releases GitHub](https://github.com/aervyn96/WhooshBridge/releases), décompressez-le,
+puis placez **Whoosh Bridge.app** dans Applications. Le paquet inclut les composants
+Rust et Python nécessaires ; aucun outil de développement n’est requis pour l’utiliser.
+Choisissez le ZIP de l’application, pas les archives de sources générées par GitHub.
+Le paquet V1 est destiné aux Mac Apple Silicon ; aucun binaire Intel n’est fourni.
+
+L’application est **signée localement, sans notarisation Apple**. macOS peut afficher
+un avertissement de sécurité au premier lancement. Sparkle signe et vérifie séparément
+les archives de mise à jour et le flux ; il ne remplace pas une signature Apple Developer ID.
+
+Consultez le [changelog de la V1](CHANGELOG.md#100--2026-11-11) pour les détails.
 
 ## Fonctionnalités
 
+- Interface native SwiftUI, barre latérale, apparence claire/sombre du système et raccourcis clavier.
+- Recherche dans les sorties et écran dédié aux résultats des transferts.
 - Connexion au site officiel MyWhoosh, sélection des sorties et transfert vers Garmin Connect.
 - Sélecteur de 13 modèles Edge avec **Product ID automatique** et versions logicielles publiées par Garmin.
 - **Unit ID personnel obligatoire**, mémorisé par modèle sur ce Mac.
@@ -18,9 +39,12 @@ Application macOS permettant de choisir ses sorties MyWhoosh, de préparer leurs
 - Identifiants MyWhoosh mémorisables dans le trousseau pour préremplir le site officiel. Le CAPTCHA et les choix de consentement restent manuels.
 - Mesures et accessoires conservés, moyennes manquantes complétées et températures virtuelles retirées.
 - Distinction entre import confirmé, doublon et fichier reçu en attente de traitement.
-- Interface en **français et anglais**, sélectionnable dans le menu **•••**.
+- Interface en **français et anglais**, sélectionnable dans **Réglages → Apparence et langue**.
 
 ## Avant / après : MyWhoosh → Garmin Connect
+
+Ces captures de services fournies précédemment illustrent un transfert observé.
+Elles ne constituent pas une nouvelle vérification de bout en bout de la V1.
 
 ### Avant — la sortie dans MyWhoosh
 
@@ -77,23 +101,29 @@ Les archives sont créées dans `dist/`. Le ZIP
 être joint à la release GitHub ; son empreinte `.sha256` est également créée.
 L’archive `Whoosh-Bridge-source.zip` contient le code. L’export ne nécessite pas Git.
 
-Le projet est centré sur `desktop/` : application Rust, composant Garmin Python,
+Le projet est centré sur `desktop/` : interface SwiftUI, moteur Rust, composant Garmin Python,
 ressources et tests. L’ancien CLI Python, ses services inutilisés et ses tests ont
 été retirés. Les crédits et la licence GPL v3 sont conservés.
 
 ## Utilisation
 
-1. Connectez vos comptes MyWhoosh et Garmin. Validez le code Garmin si demandé.
-2. Choisissez votre Edge et saisissez son Unit ID. Le bouton **i** explique où le trouver. Le Product ID du modèle est rempli automatiquement.
-3. Sélectionnez les sorties et confirmez le transfert.
-4. Vérifiez Garmin Connect. Si le fichier est seulement « reçu », attendez son traitement avant de réessayer.
+1. Ouvrez **Comptes**, connectez MyWhoosh et Garmin, puis validez le code Garmin si demandé.
+2. Dans **Mes sorties → Destination**, choisissez votre Edge et saisissez son **Unit ID**. Le bouton **?** explique où le trouver. Le Product ID du modèle est rempli automatiquement.
+3. Recherchez et sélectionnez vos sorties, puis cliquez sur **Transférer vers Garmin**. Confirmez le modèle et l’Unit ID.
+4. Consultez **Transferts** pour distinguer les imports confirmés, les doublons et les réceptions à vérifier. Cet historique dure le temps de la session de l’app.
+5. Vérifiez Garmin Connect. Un fichier « reçu » n’est pas un import confirmé ; attendez son traitement avant d’envisager un nouvel envoi. Aucun transfert ambigu n’est relancé automatiquement.
+
+Raccourcis : **⌘R** actualise les sorties, **⌘Entrée** ouvre la confirmation de transfert
+et **⌘,** ouvre les réglages. **Arrêter** demande l’annulation ; un envoi déjà commencé
+doit se terminer avant de pouvoir fermer l’app.
 
 Vos originaux MyWhoosh ne sont pas modifiés. Les activités déjà présentes sur Garmin ne sont ni réécrites ni supprimées.
 
 ## Mises à jour de l’app
 
-L’app distribuée intègre **Sparkle** : ouvrez **••• → Rechercher des mises à jour…**,
-ou laissez **Vérifier automatiquement les mises à jour** activé pour une
+L’app distribuée intègre **Sparkle** : ouvrez **Whoosh Bridge → Rechercher des mises à jour…**
+dans la barre de menus macOS, ou **Réglages → Mises à jour → Rechercher maintenant…**.
+Laissez **Rechercher automatiquement les mises à jour** activé pour une
 vérification quotidienne. Si une version est disponible, Sparkle propose de la
 télécharger, de l’installer et de relancer l’app. L’installation attend la fin des
 opérations sur les activités. Les anciennes versions sans Sparkle nécessitent
@@ -110,7 +140,7 @@ disponible une fois le flux signé et son archive de release publiés.
 
 ## Données enregistrées
 
-Au lancement, l’app propose d’accepter ou de refuser le comptage facultatif si aucun choix n’a été enregistré. Les deux réponses sont mémorisées et aucun envoi n’a lieu avant acceptation. Le choix reste modifiable dans **••• → Participer au comptage des installations actives**. Une fois activé, l’app envoie `app_active` à PostHog EU au maximum une fois par jour UTC pendant son utilisation, avec un identifiant aléatoire d’installation et sa version. Aucun compte, Unit ID ou donnée sportive ne sont inclus ; les profils de personnes et l’enrichissement géographique sont désactivés. PostHog reçoit nécessairement l’adresse IP réseau lors du transport. L’identifiant et le dernier jour de tentative sont conservés dans le fichier privé `~/Library/Application Support/Whoosh Bridge/telemetry.json`. La désactivation arrête les prochains envois ; une requête déjà en cours peut se terminer. Le compteur mesure uniquement les installations participantes.
+Au lancement, l’app propose d’accepter ou de refuser le comptage facultatif si aucun choix n’a été enregistré. Les deux réponses sont mémorisées et aucun envoi n’a lieu avant acceptation. Le choix reste modifiable dans **Réglages → Confidentialité → Partager les statistiques d’utilisation**. Une fois activé, l’app envoie `app_active` à PostHog EU au maximum une fois par jour UTC pendant son utilisation, avec un identifiant aléatoire d’installation et sa version. Aucun compte, Unit ID ou donnée sportive ne sont inclus ; les profils de personnes et l’enrichissement géographique sont désactivés. PostHog reçoit nécessairement l’adresse IP réseau lors du transport. L’identifiant et le dernier jour de tentative sont conservés dans le fichier privé `~/Library/Application Support/Whoosh Bridge/telemetry.json`. La désactivation arrête les prochains envois ; une requête déjà en cours peut se terminer. Le compteur mesure uniquement les installations participantes.
 
 **Whoosh Bridge ne collecte pas vos identifiants de connexion et ne les envoie ni à son développeur ni à un serveur intermédiaire.** Les jetons de session Garmin et les identifiants MyWhoosh optionnels sont enregistrés localement dans le trousseau de votre Mac (Keychain). Les identifiants et jetons servent à vous authentifier directement auprès de Garmin et MyWhoosh : ils sont nécessairement transmis au service concerné lors de la connexion ou des requêtes authentifiées.
 
@@ -126,12 +156,29 @@ Voir le [README anglais](README.md) pour la liste complète des Edge et versions
 
 ## Origines et crédits
 
+Whoosh Bridge est maintenu par **Nathan Paternotte**.
+
 - [marcelorodrigo/mywhoosh-to-garmin](https://github.com/marcelorodrigo/mywhoosh-to-garmin) : dépôt Python et architecture à l’origine du projet. L’ancien CLI a été retiré.
 - [jdelrue/mywoosh2garmin](https://github.com/jdelrue/mywoosh2garmin) : référence pour réparer les moyennes FIT, retirer les températures virtuelles et normaliser l’identité de l’appareil. Son identité Fenix et son numéro fixe ne sont pas repris.
 - [cyberjunky/python-garminconnect](https://github.com/cyberjunky/python-garminconnect) et [matin/garth](https://github.com/matin/garth) : intégration et authentification Garmin.
 - [garmin/fit-python-sdk](https://github.com/garmin/fit-python-sdk) : profil FIT officiel utilisé pour vérifier les identifiants et les champs.
-- [egui](https://github.com/emilk/egui), [Wry](https://github.com/tauri-apps/wry) et [Tao](https://github.com/tauri-apps/tao) : interface Rust et fenêtre web native.
+- SwiftUI : interface native macOS, navigation, apparence claire/sombre, comptes et résultats des transferts.
+- [egui](https://github.com/emilk/egui) : ancienne interface conservée comme référence de développement.
+- [Wry](https://github.com/tauri-apps/wry) et [Tao](https://github.com/tauri-apps/tao) : fenêtre web native.
 
 Le logo vectoriel est une création originale de ce projet. La licence **GPL v3** du dépôt est conservée : [LICENSE](LICENSE). Détails : [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 Projet indépendant, non affilié à Garmin ou MyWhoosh.
+
+## Aperçu de l’interface SwiftUI
+
+```bash
+bash desktop/scripts/preview-swiftui.sh
+open "desktop/target/preview/Whoosh Bridge Preview.app"
+```
+
+Cet aperçu utilise des données fictives et ne se connecte à aucun compte. Le paquet
+principal contient l’interface SwiftUI et les composants Rust `whoosh-engine` et
+`whoosh-web-login`. L’ancienne interface egui reste dans les sources comme référence.
+Les résultats de transfert sont conservés pendant la session de l’application ;
+une réception non confirmée n’est jamais relancée automatiquement.

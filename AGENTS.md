@@ -7,7 +7,10 @@ Rust sources, Python Garmin bridge, assets, translations, packaging scripts and
 offline tests. The historical Python CLI and services have been removed.
 Read `desktop/README.md` for architecture and FIT behavior.
 
-- `desktop/src/main.rs`, `design.rs`, `i18n.rs`: UI and translations.
+- `desktop/native/swift/`: maintained SwiftUI interface, private engine transport and paired French/English UI strings.
+- `desktop/src/bin/whoosh-engine.rs`, `lib.rs`: private Rust engine and shared modules.
+- `desktop/src/main.rs`, `design.rs`: preserved egui reference, not the packaged app.
+- `desktop/src/i18n.rs`, `desktop/locales/en.json`: engine message translations.
 - `desktop/src/worker.rs`: background workflow; keep network work off the UI thread.
 - `desktop/src/web_session.rs`, `mywhoosh.rs`, `bin/whoosh-web-login.rs`: official
   MyWhoosh website session and WebKit helper. Preserve CAPTCHA and consent handling.

@@ -4,17 +4,17 @@ IMPORTANT: This file was signed by Sparkle. Any modifications to this file requi
     <channel>
         <title>Whoosh Bridge</title>
         <item>
-            <title>0.1.0-alpha.4</title>
-            <pubDate>Mon, 09 Nov 2026 10:42:19 +0100</pubDate>
+            <title>1.0.0</title>
+            <pubDate>Wed, 11 Nov 2026 17:31:04 +0100</pubDate>
             <link>https://github.com/aervyn96/WhooshBridge</link>
-            <sparkle:version>4</sparkle:version>
-            <sparkle:shortVersionString>0.1.0-alpha.4</sparkle:shortVersionString>
+            <sparkle:version>6</sparkle:version>
+            <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
             <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
-            <enclosure url="https://github.com/aervyn96/WhooshBridge/releases/download/v0.1.0-alpha.4/Whoosh-Bridge-0.1.0-alpha.4-macos-arm64.zip" length="24141081" type="application/octet-stream" sparkle:edSignature="+JgNxqoeGNmMuHLfP0xTT0tquMvUsTVbMsZvP7WHm9NaYonE+GT6RiOyuJggkXKyA8baByUSiatpOXTtifRQAg=="></enclosure>
+            <enclosure url="https://github.com/aervyn96/WhooshBridge/releases/download/v1.0.0/Whoosh-Bridge-1.0.0-macos-arm64.zip" length="21714766" type="application/octet-stream" sparkle:edSignature="BAHftW28IXgTybfjch65qQZnSQiMsvS5NkV5U0CzvbM4DPMJW5HXKKycPitx6EpS93AZj8pw4MQ2u9NEM1qjAQ=="></enclosure>
         </item>
     </channel>
 </rss><!-- sparkle-signatures:
-edSignature: O5ByipfP8acm6yUGq0/D1SzhImeh3t6caDE7NZVoCBxFYOSXfr4qkvBCF1Y08lZDA+pMhGx8WvlKby70y4PNDQ==
-length: 1245
+edSignature: g0P8HpqvD9bYri1soNflUWf6MkBar0YK65GxTfR5S03qIbzQE6MqsPz2bJrNaNGqesu75ADBPUf7hX194ZxlBQ==
+length: 1213
 -->

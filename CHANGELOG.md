@@ -1,5 +1,47 @@
 # Changelog
 
+## 1.0.0 — 2026-11-11
+
+First stable version. GitHub tag: `v1.0.0`. Sparkle build: **6**.
+
+### Native macOS interface
+
+- Replace the packaged egui frontend with a SwiftUI interface for macOS 14+:
+  sidebar navigation, ride search and selection, Garmin destination panel,
+  account management, transfer receipts, settings and About.
+- Follow system light/dark appearance and provide French and English UI text.
+- Add native transfer confirmation, Garmin Unit ID help and keyboard shortcuts:
+  ⌘R to refresh, ⌘Return to transfer, and ⌘, for settings.
+- Add Nathan Paternotte to About and use an unbranded GPS illustration.
+- Refresh the English and French README screenshots with synthetic preview data.
+
+### Workflow and fixes
+
+- Keep the Rust FIT and authentication workflow behind private JSON-lines pipes,
+  with the Python Garmin component bundled in the app. Preserve Keychain sessions,
+  official-site MyWhoosh sign-in, CAPTCHA/consent handling and Garmin MFA.
+- Fix numeric device preference keys rejected by the Rust command decoder when
+  changing Edge models. Keep separate Unit IDs for each model and recover cleanly
+  from rejected commands instead of leaving the interface busy.
+- Preserve measurements, unknown FIT fields and accessory identities. Distinguish
+  confirmed imports, duplicates and received files; never retry ambiguous uploads
+  automatically. Receipt history persists across refreshes during the app session.
+- Save preferences before quitting and prevent closing during an active operation.
+- Retain optional usage counting with explicit consent, and defer Sparkle updates
+  while an activity operation is running. Keep the egui frontend as a source reference.
+
+### Distribution and validation
+
+- Apple Silicon package: `Whoosh-Bridge-1.0.0-macos-arm64.zip`; macOS 14+.
+- Local ad-hoc app signature; no Apple Developer ID signature or notarization.
+- Sparkle Ed25519 signatures for the exact application ZIP and arm64 appcast are
+  generated and verified locally. Publish the ZIP before the signed feed on `main`.
+- Local Rust, Clippy, Python, JavaScript, SwiftUI model and native updater lifecycle
+  checks passed; 26 synthetic FIT exports were independently decoded.
+- SwiftUI preview interactions were checked with synthetic data. GitHub CI, public
+  V1 update delivery, Intel installation and real Garmin imports are not asserted
+  by these local checks.
+
 ## 0.1.0-alpha.4
 
 ### Added

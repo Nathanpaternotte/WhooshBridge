@@ -15,7 +15,8 @@ if [ ! -x "$BUILD_PYTHON" ]; then BUILD_PYTHON=python3; fi
 .build-venv312/bin/python -m pip install -r requirements-build.txt
 export PYINSTALLER_CONFIG_DIR="$DESKTOP_DIR/target/pyinstaller-cache"
 SPARKLE_DIR="$("$BUILD_PYTHON" scripts/fetch-sparkle.py)"
-cargo build --release --locked --bins
+cargo build --release --locked --bin whoosh-engine --bin whoosh-web-login
+bash scripts/build-swiftui.sh
 .build-venv312/bin/python -m PyInstaller --noconfirm --clean --onedir \
   --name garmin-bridge --distpath target/sidecar --workpath target/pyinstaller \
   bridge/garmin_bridge.py
@@ -23,7 +24,9 @@ APP="target/macos/Whoosh Bridge.app"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp assets/WhooshBridge.icns "$APP/Contents/Resources/WhooshBridge.icns"
 cp ../LICENSE ../THIRD_PARTY_NOTICES.md "$APP/Contents/Resources/"
-cp target/release/whoosh-bridge "$APP/Contents/MacOS/WhooshBridge.new"
+cp target/WhooshBridge-SwiftUI "$APP/Contents/MacOS/WhooshBridge.new"
+cp target/release/whoosh-engine "$APP/Contents/MacOS/whoosh-engine.new"
+mv -f "$APP/Contents/MacOS/whoosh-engine.new" "$APP/Contents/MacOS/whoosh-engine"
 mv -f "$APP/Contents/MacOS/WhooshBridge.new" "$APP/Contents/MacOS/WhooshBridge"
 cp target/release/whoosh-web-login "$APP/Contents/MacOS/whoosh-web-login.new"
 mv -f "$APP/Contents/MacOS/whoosh-web-login.new" "$APP/Contents/MacOS/whoosh-web-login"
